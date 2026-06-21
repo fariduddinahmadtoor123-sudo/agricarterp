@@ -20,7 +20,18 @@ globs:
 
 # Contacts Module — FROZEN
 
-**Frozen:** 2026-06-23 (develop branch)
+**Frozen:** 2026-06-23  
+**Release branch:** `release/contacts-module-complete`  
+**Milestone baseline:** `8c63dec` (Supplier + Customer complete)
+
+Pull this branch to restore the exact application state when the Contacts Module was completed:
+
+```bash
+git fetch origin
+git checkout release/contacts-module-complete
+```
+
+Do not merge future module work into this release branch. New modules develop on `develop` separately.
 
 The Contacts module (Suppliers + Customers) is approved for freeze. Do not modify Contacts-related code without explicit user approval.
 
