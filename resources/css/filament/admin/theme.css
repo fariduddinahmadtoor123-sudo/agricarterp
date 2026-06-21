@@ -1,6 +1,8 @@
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
 @import './responsive.css';
 @import './contacts-supplier-form.css';
+@import './contacts-customer-form.css';
+@import './contacts-list-toolbar.css';
 
 @theme {
     --color-agricart-green: #83b735;

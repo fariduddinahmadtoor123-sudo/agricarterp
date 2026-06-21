@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Filament\Contacts\Support\ContactsListToolbar;
 use App\Models\ContactMobileNumber;
+use App\Models\Customer;
 use App\Models\Supplier;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Route;
@@ -24,8 +26,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        ContactsListToolbar::register();
+
         Relation::enforceMorphMap([
             ContactMobileNumber::CONTACTABLE_SUPPLIER => Supplier::class,
+            ContactMobileNumber::CONTACTABLE_CUSTOMER => Customer::class,
         ]);
 
         $path = parse_url(config('app.url'), PHP_URL_PATH) ?: '';

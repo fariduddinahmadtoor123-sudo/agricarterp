@@ -148,6 +148,31 @@ class SupplierPersistenceTest extends TestCase
         ]);
     }
 
+    public function test_rejects_empty_bank_account_rows(): void
+    {
+        $this->expectException(ValidationException::class);
+
+        app(SupplierPersistenceService::class)->create($this->supplierPayload([
+            'bank_accounts' => [
+                [
+                    'bank_name' => null,
+                    'branch_name' => null,
+                    'account_title' => null,
+                    'iban_account_number' => null,
+                ],
+            ],
+        ]));
+    }
+
+    public function test_rejects_invalid_primary_mobile_format(): void
+    {
+        $this->expectException(ValidationException::class);
+
+        app(SupplierPersistenceService::class)->create($this->supplierPayload([
+            'mobile_number' => 'not-a-mobile',
+        ]));
+    }
+
     /**
      * @param  array<string, mixed>  $overrides
      * @return array<string, mixed>

@@ -3,6 +3,7 @@
 namespace App\Filament\Pages\Contacts;
 
 use App\Filament\Contacts\Schemas\SupplierForm;
+use App\Filament\Contacts\Support\SupplierTableConfiguration;
 use App\Filament\Pages\Concerns\InteractsWithModuleSubmenuPage;
 use App\Models\Supplier;
 use App\Services\Contacts\SupplierPersistenceService;
@@ -18,8 +19,6 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Validation\ValidationException;
 
@@ -59,13 +58,19 @@ class Suppliers extends Page implements HasTable
 
     public function table(Table $table): Table
     {
-        return $table
-            ->query(Supplier::query())
-            ->defaultSort('created_at', 'desc')
-            ->deferLoading()
-            ->modelLabel('Supplier')
-            ->pluralModelLabel('Suppliers')
-            ->columns([
+        return SupplierTableConfiguration::applyListLayout(
+            $table
+                ->query(Supplier::query())
+                ->defaultSort('created_at', 'desc')
+                ->deferLoading()
+                ->modelLabel('Supplier')
+                ->pluralModelLabel('Suppliers')
+                ->headerActions(
+                    SupplierAuthorization::canCreate()
+                        ? [$this->getCreateSupplierAction()]
+                        : [],
+                )
+                ->columns([
                 TextColumn::make('supplier_code')
                     ->label('Code')
                     ->searchable()
@@ -106,31 +111,19 @@ class Suppliers extends Page implements HasTable
                         default => $state,
                     }),
             ])
-            ->filters([
-                SelectFilter::make('status')
-                    ->label('Status')
-                    ->options(config('contacts.supplier_statuses', [])),
-                TrashedFilter::make()
-                    ->visible(fn (): bool => SupplierAuthorization::canRestore()),
-            ])
             ->recordActions([
                 $this->getViewSupplierAction(),
                 $this->getEditSupplierAction(),
                 $this->getSetInactiveSupplierAction(),
                 $this->getRestoreSupplierAction(),
                 $this->getDeleteSupplierAction(),
-            ]);
+            ]),
+        );
     }
 
     protected function getHeaderActions(): array
     {
-        if (! SupplierAuthorization::canCreate()) {
-            return [];
-        }
-
-        return [
-            $this->getCreateSupplierAction(),
-        ];
+        return [];
     }
 
     protected function getCreateSupplierAction(): Action

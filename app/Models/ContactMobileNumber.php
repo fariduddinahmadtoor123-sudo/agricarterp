@@ -35,4 +35,9 @@ class ContactMobileNumber extends Model
     {
         return $this->belongsTo(SupplierContact::class, 'contact_person_id');
     }
+
+    public function customerContact(): BelongsTo
+    {
+        return $this->belongsTo(CustomerContact::class, 'contact_person_id');
+    }
 }

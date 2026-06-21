@@ -44,4 +44,16 @@ return [
     'image/webp',
   ],
 
+  'customer_documents_disk' => 'local',
+
+  'customer_documents_directory' => 'contacts/customers/documents',
+
+  'customer_document_types' => [
+    'image/jpeg',
+    'image/png',
+    'image/webp',
+  ],
+
+  'operational_customer_scope' => 'operational',
+
 ];

@@ -53,6 +53,10 @@ class SupplierPersistenceService
      */
     public function update(Supplier $supplier, array $data): Supplier
     {
+        if ($supplier->trashed()) {
+            abort(404);
+        }
+
         $data = $this->prepareData($data, $supplier);
 
         $this->dataValidator->validate($data);
@@ -134,6 +138,8 @@ class SupplierPersistenceService
             ->values()
             ->all();
 
+        $data['bank_accounts'] = $this->filterBankAccounts($data['bank_accounts'] ?? []);
+
         if (! array_key_exists('opening_balance_type', $data) || blank($data['opening_balance_type'])) {
             $data['opening_balance_type'] = $supplier?->opening_balance_type
                 ?? Supplier::OPENING_BALANCE_CREDIT;
@@ -142,6 +148,21 @@ class SupplierPersistenceService
         $data['status'] = $this->resolveStatus($data, $supplier);
 
         return $data;
+    }
+
+    /**
+     * @param  array<int, array<string, mixed>>  $bankAccounts
+     * @return array<int, array<string, mixed>>
+     */
+    protected function filterBankAccounts(array $bankAccounts): array
+    {
+        return collect($bankAccounts)
+            ->filter(fn (array $account): bool => filled($account['bank_name'] ?? null)
+                || filled($account['branch_name'] ?? null)
+                || filled($account['account_title'] ?? null)
+                || filled($account['iban_account_number'] ?? null))
+            ->values()
+            ->all();
     }
 
     /**
