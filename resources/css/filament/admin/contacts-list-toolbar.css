@@ -204,6 +204,41 @@
     white-space: nowrap;
 }
 
+/* Categories — three primary filters (Status, Level, Leaf) */
+.agricart-contacts-list-categories.fi-ta .fi-ta-search-field {
+    flex: 0 1 14rem;
+    min-width: 12rem;
+    max-width: 18rem;
+}
+
+.agricart-contacts-list-categories.fi-ta .agricart-contacts-primary-filters {
+    flex: 1 1 auto;
+}
+
+.agricart-contacts-list-categories.fi-ta .agricart-contacts-primary-filters .fi-fo-field-wrp {
+    width: auto;
+    flex: 0 0 auto;
+    min-width: 0;
+}
+
+.agricart-contacts-list-categories.fi-ta .agricart-contacts-primary-filters .agricart-category-filter-status-wrap {
+    width: 11rem;
+    flex: 0 0 11rem;
+    min-width: 11rem;
+}
+
+.agricart-contacts-list-categories.fi-ta .agricart-contacts-primary-filters .agricart-category-filter-level-wrap {
+    width: 10.5rem;
+    flex: 0 0 10.5rem;
+    min-width: 10.5rem;
+}
+
+.agricart-contacts-list-categories.fi-ta .agricart-contacts-primary-filters .agricart-category-filter-leaf-wrap {
+    width: 12rem;
+    flex: 0 0 12rem;
+    min-width: 12rem;
+}
+
 .agricart-contacts-list.fi-ta .fi-ta-filters-dropdown {
     flex: 0 0 auto;
 }
@@ -264,6 +299,24 @@
         flex: 0 0 18rem;
         min-width: 18rem;
     }
+
+    .agricart-contacts-list-categories.fi-ta .agricart-contacts-primary-filters .agricart-category-filter-status-wrap {
+        width: 11.5rem;
+        flex: 0 0 11.5rem;
+        min-width: 11.5rem;
+    }
+
+    .agricart-contacts-list-categories.fi-ta .agricart-contacts-primary-filters .agricart-category-filter-level-wrap {
+        width: 11rem;
+        flex: 0 0 11rem;
+        min-width: 11rem;
+    }
+
+    .agricart-contacts-list-categories.fi-ta .agricart-contacts-primary-filters .agricart-category-filter-leaf-wrap {
+        width: 12.5rem;
+        flex: 0 0 12.5rem;
+        min-width: 12.5rem;
+    }
 }
 
 @media (max-width: 1023px) {
@@ -307,6 +360,14 @@
     .agricart-contacts-list-customers.fi-ta .agricart-contacts-primary-filters .agricart-customer-filter-city-wrap,
     .agricart-contacts-list-customers.fi-ta .agricart-contacts-primary-filters .agricart-customer-filter-country-wrap {
         flex: 1 1 calc(50% - 0.3125rem);
+        width: auto;
+        min-width: 0;
+    }
+
+    .agricart-contacts-list-categories.fi-ta .agricart-contacts-primary-filters .agricart-category-filter-status-wrap,
+    .agricart-contacts-list-categories.fi-ta .agricart-contacts-primary-filters .agricart-category-filter-level-wrap,
+    .agricart-contacts-list-categories.fi-ta .agricart-contacts-primary-filters .agricart-category-filter-leaf-wrap {
+        flex: 1 1 calc(33.333% - 0.5rem);
         width: auto;
         min-width: 0;
     }

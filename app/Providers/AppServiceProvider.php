@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Filament\Contacts\Support\ContactsListToolbar;
+use App\Filament\ProductCatalog\Support\ProductCatalogListToolbar;
 use App\Models\ContactMobileNumber;
 use App\Models\Customer;
 use App\Models\Supplier;
@@ -27,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         ContactsListToolbar::register();
+        ProductCatalogListToolbar::register();
 
         Relation::enforceMorphMap([
             ContactMobileNumber::CONTACTABLE_SUPPLIER => Supplier::class,
