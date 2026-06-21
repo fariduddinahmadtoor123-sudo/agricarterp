@@ -46,6 +46,7 @@ class EditProfile extends BaseEditProfile
                 Section::make('Password')
                     ->description('Leave blank to keep your current password.')
                     ->icon(Heroicon::OutlinedKey)
+                    ->extraAttributes(['id' => 'password'])
                     ->schema([
                         $this->getPasswordFormComponent(),
                         $this->getPasswordConfirmationFormComponent(),
