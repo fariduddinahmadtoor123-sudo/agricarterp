@@ -1,0 +1,42 @@
+---
+description: Git workflow for Agricart ERP — develop branch, protected main, no auto push/merge/deploy
+alwaysApply: true
+---
+
+# Git Workflow — Agricart ERP
+
+## Branches
+
+- **`main`** — deployment-safe; Hostinger production always pulls from `main`
+- **`develop`** — all new work is committed here first
+- Never push directly to `main` without explicit user confirmation
+
+## Before Any Push
+
+1. Run `git status`
+2. Show current branch
+3. Explain exactly what commits/files will be pushed
+4. Ask for user approval — do not push until approved
+
+## Before Merging develop → main
+
+1. Review all changes (`git diff main...develop`, commit log)
+2. Check for errors (tests, lint, broken routes if applicable)
+3. Confirm deployment readiness with the user
+4. Ask for explicit merge approval — never merge automatically
+
+## Prohibited Without Confirmation
+
+- `git push` (any branch)
+- `git merge`
+- Deployment actions (Hostinger pull, artisan on production, etc.)
+
+## Workflow
+
+```
+feature/fix work → commit on develop → review → merge to main (approved) → deploy from main
+```
+
+## Milestone
+
+`main` at commit `3828543` ("Phase 1 UI Foundation Complete") is the stable UI Foundation baseline.
