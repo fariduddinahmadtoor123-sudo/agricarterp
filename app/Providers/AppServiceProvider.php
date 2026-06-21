@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\ContactMobileNumber;
+use App\Models\Supplier;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
@@ -21,6 +24,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Relation::enforceMorphMap([
+            ContactMobileNumber::CONTACTABLE_SUPPLIER => Supplier::class,
+        ]);
+
         $path = parse_url(config('app.url'), PHP_URL_PATH) ?: '';
 
         if ($path !== '' && $path !== '/') {

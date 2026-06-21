@@ -1,0 +1,43 @@
+---
+description: Supplier module is frozen after Phase 1 Contacts delivery
+globs:
+  - app/Filament/Contacts/**
+  - app/Filament/Pages/Contacts/Suppliers.php
+  - app/Models/Supplier*.php
+  - app/Models/ContactMobileNumber.php
+  - app/Services/Contacts/**
+  - app/Support/Contacts/**
+  - config/contacts.php
+  - database/migrations/*supplier*
+  - database/migrations/*contact_mobile*
+  - resources/css/filament/admin/contacts-supplier-form.css
+  - tests/**/*Supplier*
+---
+
+# Supplier Module — FROZEN
+
+**Frozen:** 2026-06-22 (develop branch, pre-production deploy)
+
+The Supplier module is approved for freeze. Do not modify Supplier-related code without explicit user approval.
+
+## Scope
+
+- Supplier CRUD, status (active/inactive), soft delete, restore
+- Supplier form UI layout (frozen)
+- Profile photo, card front/back document uploads with storage cleanup
+- Mobile number registry and supplier code sequencing
+- Role-based permissions via `users.role` (`super_admin` | `staff`)
+
+## Out of scope (deferred)
+
+- Full Roles & Permissions module (placeholder page only)
+- Customer module (blocked until Supplier deploy is complete)
+- Ledger account auto-link on supplier create
+
+## Operational query for future modules
+
+```php
+Supplier::operational()->orderBy('business_name')
+```
+
+Excludes inactive and soft-deleted suppliers from Purchase dropdowns.

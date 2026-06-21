@@ -20,10 +20,15 @@ class User extends Authenticatable implements FilamentUser
      *
      * @var list<string>
      */
+    public const ROLE_SUPER_ADMIN = 'super_admin';
+
+    public const ROLE_STAFF = 'staff';
+
     protected $fillable = [
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -52,5 +57,15 @@ class User extends Authenticatable implements FilamentUser
     public function canAccessPanel(Panel $panel): bool
     {
         return true;
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === self::ROLE_SUPER_ADMIN;
+    }
+
+    public function isStaff(): bool
+    {
+        return $this->role === self::ROLE_STAFF;
     }
 }

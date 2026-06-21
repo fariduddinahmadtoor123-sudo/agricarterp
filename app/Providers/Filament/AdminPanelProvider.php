@@ -38,7 +38,7 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->profile(EditProfile::class, isSimple: false)
             ->brandName(config('agricart.brand.name'))
-            ->font('Arial, Helvetica, sans-serif', provider: LocalFontProvider::class)
+            ->font('Arial, sans-serif', provider: LocalFontProvider::class)
             ->defaultAvatarProvider(AgricartAvatarProvider::class)
             ->colors([
                 'primary' => Color::hex('#83B735'),
