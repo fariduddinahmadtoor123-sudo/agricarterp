@@ -1,0 +1,313 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+@import './responsive.css';
+
+@theme {
+    --color-agricart-green: #83b735;
+    --color-agricart-green-hover: #74a32f;
+    --color-agricart-accent: #fbbc34;
+    --color-agricart-text: #242424;
+}
+
+:root {
+    --agricart-primary: #83b735;
+    --agricart-primary-hover: #74a32f;
+    --agricart-accent: #fbbc34;
+    --agricart-text: #242424;
+    --agricart-sidebar-width: 15.5rem;
+    --agricart-sidebar-collapsed-width: 4.5rem;
+}
+
+.fi-body {
+    color: var(--agricart-text);
+}
+
+/* ── Sidebar: fit-content width, collapsible icons-only ── */
+.fi-sidebar.fi-sidebar-open {
+    width: var(--agricart-sidebar-width);
+}
+
+.fi-body-has-sidebar-collapsible-on-desktop:not(.fi-body-has-sidebar-fully-collapsible-on-desktop) {
+    & .fi-sidebar:not(.fi-sidebar-open) {
+        width: var(--agricart-sidebar-collapsed-width);
+    }
+}
+
+.fi-sidebar-nav {
+    padding-block: 0.75rem 1rem;
+    padding-inline: 0.5rem;
+    gap: 0.25rem;
+}
+
+.fi-sidebar-nav-groups {
+    gap: 0.125rem;
+    margin-inline: 0;
+}
+
+.fi-sidebar-item-btn {
+    white-space: nowrap;
+}
+
+.fi-sidebar-item-label {
+    font-size: 0.8125rem;
+}
+
+.fi-sidebar-header {
+    min-height: 3.5rem;
+    padding-inline: 0.75rem;
+}
+
+@media (min-width: 1024px) {
+    .fi-body-has-topbar .fi-sidebar-header-ctn {
+        display: none;
+    }
+}
+
+/* ── Top header ── */
+.fi-topbar {
+    background-color: #ffffff;
+    gap: 0.75rem;
+    padding-inline: 0.75rem 1rem;
+}
+
+.fi-topbar-start {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    align-items: center;
+    gap: 0.75rem;
+    margin-inline-end: 0;
+}
+
+.fi-topbar-end {
+    flex-shrink: 0;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.agricart-topbar-breadcrumbs {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.agricart-topbar-breadcrumbs .fi-breadcrumbs {
+    flex-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.agricart-topbar-breadcrumbs .fi-breadcrumbs-item-label {
+    font-size: 0.8125rem;
+    color: rgb(107 114 128);
+}
+
+.agricart-topbar-breadcrumbs .fi-breadcrumbs-item:last-child .fi-breadcrumbs-item-label {
+    color: var(--agricart-text);
+    font-weight: 600;
+}
+
+/* ── Main layout: module nav bar + content ── */
+.fi-main-ctn {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background-color: #f8faf8;
+}
+
+.agricart-module-nav {
+    flex-shrink: 0;
+    border-bottom: 1px solid rgb(229 231 235 / 0.9);
+    background-color: #ffffff;
+    padding-inline: max(0.75rem, env(safe-area-inset-left)) max(0.75rem, env(safe-area-inset-right));
+}
+
+.agricart-module-nav__inner {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 2.75rem;
+    padding-block: 0.5rem;
+}
+
+.agricart-module-nav__module {
+    flex-shrink: 0;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--agricart-primary);
+    padding-inline-end: 0.75rem;
+    border-inline-end: 1px solid rgb(229 231 235);
+}
+
+.agricart-module-nav__scroll {
+    flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.agricart-module-nav__scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.agricart-module-nav__list {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+}
+
+.agricart-module-nav__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.25rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: rgb(75 85 99);
+    text-decoration: none;
+    transition: background-color 150ms ease, color 150ms ease;
+}
+
+.agricart-module-nav__link:hover,
+.agricart-module-nav__link:focus-visible {
+    background-color: rgb(131 183 53 / 0.08);
+    color: var(--agricart-primary);
+}
+
+.agricart-module-nav__link--active {
+    background-color: rgb(131 183 53 / 0.14);
+    color: var(--agricart-primary);
+    font-weight: 600;
+}
+
+.agricart-module-nav__secondary {
+    border-top: 1px solid rgb(229 231 235 / 0.9);
+    background-color: rgb(249 250 251);
+    padding-block: 0.375rem 0.5rem;
+    padding-inline: max(0.75rem, env(safe-area-inset-left)) max(0.75rem, env(safe-area-inset-right));
+}
+
+.agricart-module-nav__secondary .agricart-module-nav__scroll {
+    padding-inline-start: 0.25rem;
+}
+
+.agricart-module-nav__link--secondary {
+    font-size: 0.8125rem;
+}
+
+.fi-main {
+    flex: 1;
+    min-width: 0;
+    max-width: none;
+    margin-inline: 0;
+    background-color: #f8faf8;
+}
+
+/* Module submenus use the horizontal nav bar, not Filament's page sub-navigation sidebar */
+.fi-page-sub-navigation-sidebar-ctn {
+    display: none !important;
+}
+
+.fi-page.fi-page-has-sub-navigation-start .fi-page-main,
+.fi-page.fi-page-has-sub-navigation-end .fi-page-main {
+    flex-direction: column;
+}
+
+/* Hide duplicate page headers (breadcrumbs live in topbar) */
+.fi-page .fi-header {
+    display: none;
+}
+
+/* ── Active sidebar items ── */
+.fi-sidebar-item-btn.fi-active,
+.fi-sidebar-item.fi-active .fi-sidebar-item-btn {
+    background-color: rgb(131 183 53 / 0.12);
+    color: var(--agricart-primary);
+}
+
+.fi-sidebar-item-btn:hover,
+.fi-sidebar-item-btn:focus-visible {
+    background-color: rgb(131 183 53 / 0.08);
+}
+
+.fi-btn.fi-color-primary:not(.fi-disabled):not([disabled]):hover,
+.fi-btn.fi-color-primary:not(.fi-disabled):not([disabled]):focus-visible {
+    background-color: var(--agricart-primary-hover);
+}
+
+.fi-badge.fi-color-warning {
+    background-color: rgb(251 188 52 / 0.15);
+    color: #8a6400;
+}
+
+.fi-sidebar-header,
+.fi-main-ctn {
+    background-color: #ffffff;
+}
+
+.fi-section:not(.fi-section-not-contained) {
+    border-color: rgb(229 231 235 / 0.9);
+    background-color: #ffffff;
+}
+
+.fi-logo {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+}
+
+.fi-user-menu-trigger {
+    border-radius: 9999px;
+    padding: 0.125rem;
+    transition: background-color 150ms ease;
+}
+
+.fi-user-menu-trigger:hover,
+.fi-user-menu-trigger:focus-visible {
+    background-color: rgb(131 183 53 / 0.1);
+}
+
+.fi-user-avatar {
+    box-shadow: 0 0 0 2px rgb(131 183 53 / 0.35);
+}
+
+.dark .fi-topbar,
+.dark .agricart-module-nav,
+.dark .fi-sidebar-header,
+.dark .fi-main-ctn {
+    background-color: rgb(17 24 39);
+}
+
+.dark .fi-main {
+    background-color: rgb(3 7 18);
+}
+
+.dark .agricart-module-nav {
+    border-bottom-color: rgb(55 65 81 / 0.8);
+}
+
+.dark .agricart-module-nav__module {
+    border-inline-end-color: rgb(55 65 81);
+}
+
+.dark .agricart-module-nav__link {
+    color: rgb(156 163 175);
+}
+
+.dark .agricart-module-nav__link--active {
+    background-color: rgb(131 183 53 / 0.2);
+    color: #a8d65a;
+}
+
+.dark .agricart-module-nav__secondary {
+    border-top-color: rgb(55 65 81 / 0.8);
+    background-color: rgb(17 24 39);
+}
