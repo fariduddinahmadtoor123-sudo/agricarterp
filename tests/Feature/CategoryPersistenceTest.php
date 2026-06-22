@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Services\ProductCatalog\CategoryCodeGenerator;
 use App\Services\ProductCatalog\CategoryPersistenceService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 
@@ -56,13 +57,155 @@ class CategoryPersistenceTest extends TestCase
         $this->assertSame('CAT-000002', $generator->generate());
     }
 
-    public function test_requires_english_and_urdu_names(): void
+    public function test_requires_english_name(): void
     {
         $this->expectException(ValidationException::class);
 
         app(CategoryPersistenceService::class)->create([
-            'name_en' => 'Only English',
+            'name_ur' => 'صرف اردو',
         ]);
+    }
+
+    public function test_allows_create_without_urdu_name(): void
+    {
+        $category = app(CategoryPersistenceService::class)->create([
+            'name_en' => 'Side Gear',
+        ]);
+
+        $this->assertSame('Side Gear', $category->name_en);
+        $this->assertSame('', $category->name_ur);
+        $this->assertSame(Category::AI_STATUS_PENDING, $category->ai_status);
+        $this->assertNull($category->slug);
+    }
+
+    public function test_persists_extended_content_fields(): void
+    {
+        $category = app(CategoryPersistenceService::class)->create($this->categoryPayload([
+            'slug' => 'side-gear',
+            'seo_focus_keyword' => 'rotavator side gear',
+            'search_terms' => [
+                'en' => ['side gear'],
+                'ur' => ['سائیڈ گیئر'],
+                'aliases' => ['rotary tiller gear'],
+            ],
+            'faqs_en' => [
+                ['question' => 'What is this?', 'answer' => 'A side gear part.'],
+            ],
+            'buying_guide_en' => 'Check tooth count before purchase.',
+            'common_applications_en' => 'Wheat and maize rotavators.',
+            'customs_notes_en' => 'Classified under machinery parts.',
+            'import_notes_en' => 'Requires commercial invoice.',
+            'export_notes_en' => 'Allowed for re-export.',
+        ]));
+
+        $this->assertSame('side-gear', $category->slug);
+        $this->assertSame('rotavator side gear', $category->seo_focus_keyword);
+        $this->assertSame(['side gear'], $category->search_terms['en']);
+        $this->assertSame('Check tooth count before purchase.', $category->buying_guide_en);
+        $this->assertSame('Classified under machinery parts.', $category->customs_notes_en);
+    }
+
+    public function test_rejects_duplicate_slug(): void
+    {
+        app(CategoryPersistenceService::class)->create($this->categoryPayload([
+            'name_en' => 'First',
+            'slug' => 'side-gear',
+        ]));
+
+        $this->expectException(ValidationException::class);
+
+        app(CategoryPersistenceService::class)->create($this->categoryPayload([
+            'name_en' => 'Second',
+            'slug' => 'side-gear',
+        ]));
+    }
+
+    public function test_rejects_duplicate_english_name(): void
+    {
+        app(CategoryPersistenceService::class)->create($this->categoryPayload([
+            'name_en' => 'Rotavator Parts',
+        ]));
+
+        try {
+            app(CategoryPersistenceService::class)->create($this->categoryPayload([
+                'name_en' => 'Rotavator Parts',
+            ]));
+
+            $this->fail('Expected duplicate English name validation to fail.');
+        } catch (ValidationException $exception) {
+            $this->assertSame(
+                ['This category name already exists.'],
+                $exception->errors()['name_en'],
+            );
+        }
+    }
+
+    public function test_rejects_case_insensitive_duplicate_english_name(): void
+    {
+        app(CategoryPersistenceService::class)->create($this->categoryPayload([
+            'name_en' => 'Rotavator Parts',
+        ]));
+
+        $this->expectException(ValidationException::class);
+
+        app(CategoryPersistenceService::class)->create($this->categoryPayload([
+            'name_en' => 'rotavator parts',
+        ]));
+    }
+
+    public function test_rejects_duplicate_english_name_with_surrounding_spaces(): void
+    {
+        app(CategoryPersistenceService::class)->create($this->categoryPayload([
+            'name_en' => 'Rotavator Parts',
+        ]));
+
+        $this->expectException(ValidationException::class);
+
+        app(CategoryPersistenceService::class)->create($this->categoryPayload([
+            'name_en' => '  ROTAVATOR PARTS  ',
+        ]));
+    }
+
+    public function test_allows_edit_without_changing_english_name(): void
+    {
+        $category = app(CategoryPersistenceService::class)->create($this->categoryPayload([
+            'name_en' => 'Rotavator Parts',
+            'name_ur' => 'روٹیویٹر پارٹس',
+        ]));
+
+        $updated = app(CategoryPersistenceService::class)->update($category, [
+            'name_en' => 'rotavator parts',
+            'name_ur' => 'اپ ڈیٹ',
+        ]);
+
+        $this->assertSame('rotavator parts', $updated->name_en);
+        $this->assertSame('اپ ڈیٹ', $updated->name_ur);
+    }
+
+    public function test_rejects_edit_to_existing_english_name(): void
+    {
+        app(CategoryPersistenceService::class)->create($this->categoryPayload([
+            'name_en' => 'Rotavator Parts',
+        ]));
+
+        $other = app(CategoryPersistenceService::class)->create($this->categoryPayload([
+            'name_en' => 'Spray Pump',
+        ]));
+
+        $this->expectException(ValidationException::class);
+
+        app(CategoryPersistenceService::class)->update($other, [
+            'name_en' => 'ROTAVATOR PARTS',
+        ]);
+    }
+
+    public function test_trims_english_name_on_create(): void
+    {
+        $category = app(CategoryPersistenceService::class)->create($this->categoryPayload([
+            'name_en' => '  Side Gear  ',
+        ]));
+
+        $this->assertSame('Side Gear', $category->name_en);
     }
 
     public function test_rejects_create_under_archived_parent(): void
@@ -196,6 +339,21 @@ class CategoryPersistenceTest extends TestCase
 
         app(CategoryPersistenceService::class)->restore($category);
         $this->assertSame(Category::STATUS_ACTIVE, $category->fresh()->status);
+    }
+
+    public function test_persists_category_image_path(): void
+    {
+        Storage::fake('local');
+        config(['product-catalog.category_image_disk' => 'local']);
+
+        Storage::disk('local')->put('categories/pump.jpg', 'image-bytes');
+
+        $category = app(CategoryPersistenceService::class)->create($this->categoryPayload([
+            'name_en' => 'Spray Pump',
+            'image' => 'categories/pump.jpg',
+        ]));
+
+        $this->assertSame('categories/pump.jpg', $category->image_path);
     }
 
     public function test_staff_cannot_archive(): void

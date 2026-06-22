@@ -7,4 +7,12 @@ return [
         'active' => 'Active',
         'archived' => 'Archived',
     ],
+
+    'category_ai_statuses' => [
+        'pending' => 'Pending',
+        'processing' => 'Processing',
+        'complete' => 'Complete',
+        'review' => 'Review',
+        'failed' => 'Failed',
+    ],
 ];

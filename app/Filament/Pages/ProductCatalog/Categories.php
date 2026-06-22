@@ -83,10 +83,6 @@ class Categories extends Page implements HasTable
                         ->sortable()
                         ->badge()
                         ->color('gray'),
-                    TextColumn::make('full_path')
-                        ->label('Full Path')
-                        ->searchable()
-                        ->wrap(),
                     TextColumn::make('level')
                         ->label('Level')
                         ->sortable(),
@@ -125,7 +121,7 @@ class Categories extends Page implements HasTable
             ->label('Add Category')
             ->icon(Heroicon::OutlinedPlus)
             ->modalHeading('Add Category')
-            ->modalWidth(Width::SevenExtraLarge)
+            ->modalWidth(Width::FiveExtraLarge)
             ->modalSubmitActionLabel('Save & Close')
             ->modalCancelActionLabel('Cancel')
             ->extraModalFooterActions(function (Action $action): array {
@@ -148,7 +144,7 @@ class Categories extends Page implements HasTable
             ->icon(Heroicon::OutlinedEye)
             ->visible(fn (): bool => CategoryAuthorization::canView())
             ->modalHeading('View Category')
-            ->modalWidth(Width::SevenExtraLarge)
+            ->modalWidth(Width::FiveExtraLarge)
             ->modalSubmitAction(false)
             ->modalCancelActionLabel('Close')
             ->fillForm(fn (Category $record): array => CategoryForm::fromModel($record))
@@ -162,7 +158,7 @@ class Categories extends Page implements HasTable
             ->icon(Heroicon::OutlinedPencilSquare)
             ->visible(fn (Category $record): bool => CategoryAuthorization::canEdit() && $record->isActive())
             ->modalHeading('Edit Category')
-            ->modalWidth(Width::SevenExtraLarge)
+            ->modalWidth(Width::FiveExtraLarge)
             ->modalSubmitActionLabel('Save & Close')
             ->modalCancelActionLabel('Cancel')
             ->extraModalFooterActions(function (Action $action): array {
@@ -209,7 +205,9 @@ class Categories extends Page implements HasTable
                     ->placeholder('Root level (no parent)')
                     ->searchable()
                     ->native(false)
-                    ->options(fn (Category $record): array => $hierarchy->parentOptions($record)),
+                    ->options(fn (Category $record): array => $hierarchy->parentOptionsShort($record))
+                    ->getSearchResultsUsing(fn (string $search, Category $record): array => $hierarchy->searchParentOptions($search, $record))
+                    ->getOptionLabelUsing(fn ($value): ?string => filled($value) ? $hierarchy->parentShortLabel($value) : null),
             ])
             ->action(function (array $data, Category $record, CategoryPersistenceService $persistence): void {
                 try {
@@ -323,7 +321,9 @@ class Categories extends Page implements HasTable
                 return;
             }
 
-            $schema->fill(CategoryForm::defaultState());
+            $schema->fill(array_merge(CategoryForm::defaultState(), [
+                'parent_id' => $data['parent_id'] ?? null,
+            ]));
             $schema->dispatchClientSideStateReset();
             $this->halt();
 

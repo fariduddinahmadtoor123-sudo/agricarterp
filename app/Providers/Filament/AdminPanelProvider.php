@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\AvatarProviders\AgricartAvatarProvider;
 use App\Filament\Pages\Auth\EditProfile;
 use App\Filament\Pages\Settings\Overview as SettingsOverview;
+use App\Http\Controllers\ProductCatalog\CategoryImageController;
 use App\Support\Navigation\MainMenu;
 use Filament\Enums\ThemeMode;
 use Filament\Enums\UserMenuPosition;
@@ -25,6 +26,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Route;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
@@ -111,6 +113,10 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->authenticatedRoutes(function (): void {
+                Route::get('category-images', CategoryImageController::class)
+                    ->name('product-catalog.category-images');
+            });
     }
 }

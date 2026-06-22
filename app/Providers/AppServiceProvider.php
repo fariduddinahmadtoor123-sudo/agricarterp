@@ -9,6 +9,7 @@ use App\Models\Customer;
 use App\Models\Supplier;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 
@@ -35,11 +36,26 @@ class AppServiceProvider extends ServiceProvider
             ContactMobileNumber::CONTACTABLE_CUSTOMER => Customer::class,
         ]);
 
+        if (! $this->app->runningInConsole() && $this->app->bound('request')) {
+            $request = $this->app->make('request');
+            $rootUrl = rtrim($request->getSchemeAndHttpHost() . $request->getBaseUrl(), '/');
+
+            if ($rootUrl !== $request->getSchemeAndHttpHost()) {
+                URL::forceRootUrl($rootUrl);
+            }
+        }
+
         $path = parse_url(config('app.url'), PHP_URL_PATH) ?: '';
 
         if ($path !== '' && $path !== '/') {
             $prefix = rtrim($path, '/');
+        } elseif (! $this->app->runningInConsole() && $this->app->bound('request')) {
+            $prefix = rtrim($this->app->make('request')->getBaseUrl(), '/');
+        } else {
+            $prefix = '';
+        }
 
+        if ($prefix !== '') {
             Livewire::setUpdateRoute(function ($handle) use ($prefix) {
                 return Route::post("{$prefix}/livewire/update", $handle);
             });

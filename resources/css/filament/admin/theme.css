@@ -3,6 +3,7 @@
 @import './contacts-supplier-form.css';
 @import './contacts-customer-form.css';
 @import './contacts-list-toolbar.css';
+@import './category-form.css';
 
 @theme {
     --color-agricart-green: #83b735;

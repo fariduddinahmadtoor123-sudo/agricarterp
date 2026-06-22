@@ -70,10 +70,20 @@ Use **only** `id` and `parent_id` for tree relationships, FKs, joins, and lookup
 
 ## Field rules
 
-- `name_en` and `name_ur`: both required (NOT NULL)
+- `name_en`: required (NOT NULL)
+- `name_ur`: optional at entry (stored as empty string until AI enrichment); NOT NULL column
+- `slug`: nullable, unique when set — AI-generated after enrichment
+- `ai_status`: defaults to `pending` on create; values: pending, processing, complete, review, failed
+- `search_terms`, `faqs_en`, `faqs_ur`: JSON nullable — AI-managed structured content
 - `is_leaf`: system-managed only — never exposed in create/edit forms
 - `products_count`: denormalized, required for list/reporting
 - Default list sort: `visual_mapping_code` ASC (hierarchy order), not `created_at` desc
+
+## Schema status
+
+**FROZEN** as of migration `2026_06_25_100001_add_category_content_and_ai_fields_to_categories_table`.
+
+Deferred to storefront/marketplace phase: `structured_data_json`, `google_product_category_id`, `marketplace_status`.
 
 ## Visual mapping depth letters
 

@@ -12,6 +12,16 @@ class Category extends Model
 
     public const STATUS_ARCHIVED = 'archived';
 
+    public const AI_STATUS_PENDING = 'pending';
+
+    public const AI_STATUS_PROCESSING = 'processing';
+
+    public const AI_STATUS_COMPLETE = 'complete';
+
+    public const AI_STATUS_REVIEW = 'review';
+
+    public const AI_STATUS_FAILED = 'failed';
+
     protected $fillable = [
         'parent_id',
         'category_number',
@@ -22,6 +32,7 @@ class Category extends Model
         'sort_order',
         'name_en',
         'name_ur',
+        'slug',
         'image_path',
         'description_en',
         'description_ur',
@@ -30,6 +41,8 @@ class Category extends Model
         'seo_title',
         'seo_description',
         'seo_keywords',
+        'seo_focus_keyword',
+        'search_terms',
         'hs_code',
         'usage_en',
         'usage_ur',
@@ -39,6 +52,21 @@ class Category extends Model
         'warnings_ur',
         'import_export_notes_en',
         'import_export_notes_ur',
+        'faqs_en',
+        'faqs_ur',
+        'buying_guide_en',
+        'buying_guide_ur',
+        'common_applications_en',
+        'common_applications_ur',
+        'ai_status',
+        'ai_generated_at',
+        'ai_version',
+        'customs_notes_en',
+        'customs_notes_ur',
+        'import_notes_en',
+        'import_notes_ur',
+        'export_notes_en',
+        'export_notes_ur',
         'status',
         'products_count',
     ];
@@ -53,6 +81,10 @@ class Category extends Model
             'level' => 'integer',
             'sort_order' => 'integer',
             'products_count' => 'integer',
+            'search_terms' => 'array',
+            'faqs_en' => 'array',
+            'faqs_ur' => 'array',
+            'ai_generated_at' => 'datetime',
         ];
     }
 
@@ -74,6 +106,16 @@ class Category extends Model
     public function scopeArchived($query)
     {
         return $query->where('status', self::STATUS_ARCHIVED);
+    }
+
+    public function scopeWhereNormalizedEnglishName($query, string $name)
+    {
+        return $query->whereRaw('LOWER(TRIM(name_en)) = ?', [self::normalizeEnglishName($name)]);
+    }
+
+    public static function normalizeEnglishName(string $name): string
+    {
+        return mb_strtolower(trim($name));
     }
 
     public function isActive(): bool

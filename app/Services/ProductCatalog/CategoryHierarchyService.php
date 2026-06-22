@@ -131,6 +131,70 @@ class CategoryHierarchyService
      */
     public function parentOptions(?Category $exclude = null): array
     {
+        return $this->parentOptionsShort($exclude);
+    }
+
+    public function parentShortLabel(int | string | null $categoryId): ?string
+    {
+        if (blank($categoryId)) {
+            return null;
+        }
+
+        $category = Category::query()->find($categoryId);
+
+        if ($category === null) {
+            return null;
+        }
+
+        return $category->name_en;
+    }
+
+    /**
+     * Compact labels for the parent select trigger (selected value).
+     *
+     * @return array<int|string, string>
+     */
+    public function parentOptionsShort(?Category $exclude = null): array
+    {
+        return $this->parentOptionQuery($exclude)
+            ->get()
+            ->mapWithKeys(fn (Category $category): array => [
+                $category->id => $category->name_en,
+            ])
+            ->all();
+    }
+
+    /**
+     * Name-only labels for parent search dropdown results.
+     *
+     * @return array<int|string, string>
+     */
+    public function searchParentOptions(string $search, ?Category $exclude = null): array
+    {
+        $search = trim($search);
+
+        if ($search === '') {
+            return [];
+        }
+
+        $term = '%' . addcslashes($search, '%_\\') . '%';
+
+        return $this->parentOptionQuery($exclude)
+            ->where(function ($query) use ($term): void {
+                $query
+                    ->where('name_en', 'like', $term)
+                    ->orWhere('category_number', 'like', $term);
+            })
+            ->limit(50)
+            ->get()
+            ->mapWithKeys(fn (Category $category): array => [
+                $category->id => $category->name_en,
+            ])
+            ->all();
+    }
+
+    protected function parentOptionQuery(?Category $exclude = null)
+    {
         $query = Category::query()
             ->active()
             ->orderBy('visual_mapping_code');
@@ -144,12 +208,7 @@ class CategoryHierarchyService
             }
         }
 
-        return $query
-            ->get()
-            ->mapWithKeys(fn (Category $category): array => [
-                $category->id => $category->full_path . ' (' . $category->category_number . ')',
-            ])
-            ->all();
+        return $query;
     }
 
     /**

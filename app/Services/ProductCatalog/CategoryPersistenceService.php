@@ -178,6 +178,10 @@ class CategoryPersistenceService
             $data['parent_id'] = null;
         }
 
+        if (array_key_exists('name_en', $data) && is_string($data['name_en'])) {
+            $data['name_en'] = trim($data['name_en']);
+        }
+
         if (array_key_exists('image', $data)) {
             $newPath = $this->imageStorage->extractPath($data['image']);
 
@@ -199,7 +203,8 @@ class CategoryPersistenceService
     {
         $attributes = [
             'name_en' => $data['name_en'],
-            'name_ur' => $data['name_ur'],
+            'name_ur' => filled($data['name_ur'] ?? null) ? $data['name_ur'] : '',
+            'slug' => filled($data['slug'] ?? null) ? $data['slug'] : null,
             'description_en' => $data['description_en'] ?? null,
             'description_ur' => $data['description_ur'] ?? null,
             'short_description_en' => $data['short_description_en'] ?? null,
@@ -207,6 +212,8 @@ class CategoryPersistenceService
             'seo_title' => $data['seo_title'] ?? null,
             'seo_description' => $data['seo_description'] ?? null,
             'seo_keywords' => $data['seo_keywords'] ?? null,
+            'seo_focus_keyword' => $data['seo_focus_keyword'] ?? null,
+            'search_terms' => $data['search_terms'] ?? null,
             'hs_code' => $data['hs_code'] ?? null,
             'usage_en' => $data['usage_en'] ?? null,
             'usage_ur' => $data['usage_ur'] ?? null,
@@ -216,6 +223,25 @@ class CategoryPersistenceService
             'warnings_ur' => $data['warnings_ur'] ?? null,
             'import_export_notes_en' => $data['import_export_notes_en'] ?? null,
             'import_export_notes_ur' => $data['import_export_notes_ur'] ?? null,
+            'faqs_en' => $data['faqs_en'] ?? null,
+            'faqs_ur' => $data['faqs_ur'] ?? null,
+            'buying_guide_en' => $data['buying_guide_en'] ?? null,
+            'buying_guide_ur' => $data['buying_guide_ur'] ?? null,
+            'common_applications_en' => $data['common_applications_en'] ?? null,
+            'common_applications_ur' => $data['common_applications_ur'] ?? null,
+            'customs_notes_en' => $data['customs_notes_en'] ?? null,
+            'customs_notes_ur' => $data['customs_notes_ur'] ?? null,
+            'import_notes_en' => $data['import_notes_en'] ?? null,
+            'import_notes_ur' => $data['import_notes_ur'] ?? null,
+            'export_notes_en' => $data['export_notes_en'] ?? null,
+            'export_notes_ur' => $data['export_notes_ur'] ?? null,
+            'ai_status' => $data['ai_status'] ?? $category?->ai_status ?? Category::AI_STATUS_PENDING,
+            'ai_generated_at' => array_key_exists('ai_generated_at', $data)
+                ? $data['ai_generated_at']
+                : $category?->ai_generated_at,
+            'ai_version' => array_key_exists('ai_version', $data)
+                ? $data['ai_version']
+                : $category?->ai_version,
         ];
 
         if (array_key_exists('image_path', $data)) {

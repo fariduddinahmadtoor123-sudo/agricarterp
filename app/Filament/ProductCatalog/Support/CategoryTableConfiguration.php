@@ -87,7 +87,14 @@ class CategoryTableConfiguration
             SelectFilter::make('parent_id')
                 ->label('Parent Category')
                 ->searchable()
-                ->options(fn (): array => app(CategoryHierarchyService::class)->parentOptions()),
+                ->options(fn (): array => app(CategoryHierarchyService::class)->parentOptionsShort())
+                ->modifyFormFieldUsing(function (Select $select): Select {
+                    $hierarchy = app(CategoryHierarchyService::class);
+
+                    return $select
+                        ->getSearchResultsUsing(fn (string $search): array => $hierarchy->searchParentOptions($search))
+                        ->getOptionLabelUsing(fn ($value): ?string => filled($value) ? $hierarchy->parentShortLabel($value) : null);
+                }),
 
             Filter::make('has_products')
                 ->label('Has Products')

@@ -206,9 +206,10 @@
 
 /* Categories — three primary filters (Status, Level, Leaf) */
 .agricart-contacts-list-categories.fi-ta .fi-ta-search-field {
-    flex: 0 1 14rem;
-    min-width: 12rem;
-    max-width: 18rem;
+    flex: 0 0 11.5rem;
+    min-width: 10rem;
+    max-width: 11.5rem;
+    width: 11.5rem;
 }
 
 .agricart-contacts-list-categories.fi-ta .agricart-contacts-primary-filters {
