@@ -4,6 +4,7 @@ namespace App\Filament\Pages\ProductCatalog;
 
 use App\Filament\Pages\Concerns\InteractsWithModuleSubmenuPage;
 use App\Filament\ProductCatalog\Schemas\UnitForm;
+use App\Filament\ProductCatalog\Support\ProductCatalogTableSearch;
 use App\Filament\ProductCatalog\Support\UnitTableConfiguration;
 use App\Models\Unit;
 use App\Services\ProductCatalog\UnitPersistenceService;
@@ -50,7 +51,8 @@ class Units extends Page implements HasTable
 
     public function table(Table $table): Table
     {
-        return UnitTableConfiguration::applyListLayout(
+        return ProductCatalogTableSearch::apply(
+            UnitTableConfiguration::applyListLayout(
             $table
                 ->query(Unit::query())
                 ->defaultSort('unit_number', 'asc')
@@ -96,30 +98,21 @@ class Units extends Page implements HasTable
                         ->date()
                         ->sortable(),
                 ])
-                ->modifyQueryUsing(function (Builder $query, Table $table): Builder {
-                    $search = trim((string) ($table->getLivewire()->tableSearch ?? ''));
-
-                    if ($search === '') {
-                        return $query;
-                    }
-
-                    $term = '%' . addcslashes($search, '%_\\') . '%';
-
-                    return $query->where(function (Builder $query) use ($term): void {
-                        $query
-                            ->where('unit_number', 'like', $term)
-                            ->orWhere('name_en', 'like', $term)
-                            ->orWhere('name_ur', 'like', $term)
-                            ->orWhere('abbreviation_en', 'like', $term)
-                            ->orWhere('abbreviation_ur', 'like', $term);
-                    });
-                })
                 ->recordActions([
                     $this->getViewUnitAction(),
                     $this->getEditUnitAction(),
                     $this->getArchiveUnitAction(),
                     $this->getRestoreUnitAction(),
                 ]),
+            ),
+            function (Builder $query, string $term): void {
+                $query
+                    ->where('unit_number', 'like', $term)
+                    ->orWhere('name_en', 'like', $term)
+                    ->orWhere('name_ur', 'like', $term)
+                    ->orWhere('abbreviation_en', 'like', $term)
+                    ->orWhere('abbreviation_ur', 'like', $term);
+            },
         );
     }
 

@@ -31,7 +31,7 @@ class BrandTableConfiguration
 
     public static function applyListLayout(Table $table): Table
     {
-        return $table
+        $table = $table
             ->extraAttributes([
                 'class' => 'agricart-contacts-list agricart-contacts-list-brands',
             ])
@@ -40,13 +40,18 @@ class BrandTableConfiguration
             ->filtersFormWidth(Width::Large)
             ->deferFilters(false)
             ->hiddenFilterIndicators()
-            ->filtersTriggerAction(fn ($action) => ProductCatalogListToolbar::configureMoreFiltersTrigger($action))
             ->filtersFormSchema(fn (array $filters): array => [
                 ProductCatalogListToolbar::primaryFiltersGroup($filters, static::primaryFilterKeys(), [
                     'status' => 'agricart-brand-filter-status-wrap',
                     'category_id' => 'agricart-brand-filter-category-wrap',
                 ]),
             ]);
+
+        if (ProductCatalogListToolbar::hasMoreFilters(static::moreFilterKeys())) {
+            $table->filtersTriggerAction(fn ($action) => ProductCatalogListToolbar::configureMoreFiltersTrigger($action));
+        }
+
+        return $table;
     }
 
     /**

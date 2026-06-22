@@ -20,7 +20,7 @@ class ProductControlTableConfiguration
 
     public static function applyListLayout(Table $table): Table
     {
-        return $table
+        $table = $table
             ->extraAttributes([
                 'class' => 'agricart-contacts-list agricart-contacts-list-controls',
             ])
@@ -29,12 +29,13 @@ class ProductControlTableConfiguration
             ->filtersFormWidth(Width::Large)
             ->deferFilters(false)
             ->hiddenFilterIndicators()
-            ->filtersTriggerAction(fn ($action) => ProductCatalogListToolbar::configureMoreFiltersTrigger($action))
             ->filtersFormSchema(fn (array $filters): array => [
                 ProductCatalogListToolbar::primaryFiltersGroup($filters, static::primaryFilterKeys(), [
                     'status' => 'agricart-control-filter-status-wrap',
                 ]),
             ]);
+
+        return $table;
     }
 
     /**

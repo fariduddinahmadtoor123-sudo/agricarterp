@@ -18,16 +18,30 @@
         @endif
     </div>
 
-    @if (count($categories) === 0)
+    @if (count($categories) > 0)
+        <div class="catalog-section">
+            <h2 class="catalog-section__title">Categories</h2>
+            <div class="catalog-grid">
+                @foreach ($categories as $category)
+                    @include('catalog.partials.category-card', ['category' => $category])
+                @endforeach
+            </div>
+        </div>
+    @elseif (count($products) === 0)
         <div class="catalog-empty">
             <p>No categories found at this level yet.</p>
             <p>Add categories in the admin panel to explore the hierarchy here.</p>
         </div>
-    @else
-        <div class="catalog-grid">
-            @foreach ($categories as $category)
-                @include('catalog.partials.category-card', ['category' => $category])
-            @endforeach
+    @endif
+
+    @if (count($products) > 0)
+        <div class="catalog-section {{ count($categories) > 0 ? 'catalog-section--spaced' : '' }}">
+            <h2 class="catalog-section__title">Products</h2>
+            <div class="catalog-product-grid">
+                @foreach ($products as $product)
+                    @include('catalog.partials.product-card', ['product' => $product])
+                @endforeach
+            </div>
         </div>
     @endif
 @endsection

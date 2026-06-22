@@ -8,6 +8,9 @@
 @import './unit-form.css';
 @import './attribute-form.css';
 @import './product-control-form.css';
+@import './product-form.css';
+@import './product-labels.css';
+@import './product-catalog-overview.css';
 
 @theme {
     --color-agricart-green: #83b735;

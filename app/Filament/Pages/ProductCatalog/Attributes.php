@@ -5,6 +5,7 @@ namespace App\Filament\Pages\ProductCatalog;
 use App\Filament\Pages\Concerns\InteractsWithModuleSubmenuPage;
 use App\Filament\ProductCatalog\Schemas\AttributeForm;
 use App\Filament\ProductCatalog\Support\AttributeTableConfiguration;
+use App\Filament\ProductCatalog\Support\ProductCatalogTableSearch;
 use App\Models\Attribute;
 use App\Services\ProductCatalog\AttributePersistenceService;
 use App\Support\ProductCatalog\AttributeAuthorization;
@@ -50,7 +51,8 @@ class Attributes extends Page implements HasTable
 
     public function table(Table $table): Table
     {
-        return AttributeTableConfiguration::applyListLayout(
+        return ProductCatalogTableSearch::apply(
+            AttributeTableConfiguration::applyListLayout(
             $table
                 ->query(Attribute::query())
                 ->defaultSort('attribute_number', 'asc')
@@ -84,27 +86,18 @@ class Attributes extends Page implements HasTable
                         ->date()
                         ->sortable(),
                 ])
-                ->modifyQueryUsing(function (Builder $query, Table $table): Builder {
-                    $search = trim((string) ($table->getLivewire()->tableSearch ?? ''));
-
-                    if ($search === '') {
-                        return $query;
-                    }
-
-                    $term = '%' . addcslashes($search, '%_\\') . '%';
-
-                    return $query->where(function (Builder $query) use ($term): void {
-                        $query
-                            ->where('attribute_number', 'like', $term)
-                            ->orWhere('name', 'like', $term);
-                    });
-                })
                 ->recordActions([
                     $this->getViewAttributeAction(),
                     $this->getEditAttributeAction(),
                     $this->getArchiveAttributeAction(),
                     $this->getRestoreAttributeAction(),
                 ]),
+            ),
+            function (Builder $query, string $term): void {
+                $query
+                    ->where('attribute_number', 'like', $term)
+                    ->orWhere('name', 'like', $term);
+            },
         );
     }
 

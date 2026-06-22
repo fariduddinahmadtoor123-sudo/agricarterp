@@ -5,6 +5,7 @@ namespace App\Filament\Pages\ProductCatalog;
 use App\Filament\Pages\Concerns\InteractsWithModuleSubmenuPage;
 use App\Filament\ProductCatalog\Schemas\ProductControlForm;
 use App\Filament\ProductCatalog\Schemas\ProductControlGroupForm;
+use App\Filament\ProductCatalog\Support\ProductCatalogTableSearch;
 use App\Filament\ProductCatalog\Support\ProductControlGroupTableConfiguration;
 use App\Filament\ProductCatalog\Support\ProductControlTableConfiguration;
 use App\Models\ProductControl;
@@ -75,7 +76,8 @@ class Controls extends Page implements HasTable
 
     protected function configureControlsTable(Table $table): Table
     {
-        return ProductControlTableConfiguration::applyListLayout(
+        return ProductCatalogTableSearch::apply(
+            ProductControlTableConfiguration::applyListLayout(
             $table
                 ->query(ProductControl::query())
                 ->defaultSort('control_number', 'asc')
@@ -115,33 +117,25 @@ class Controls extends Page implements HasTable
                         ->date()
                         ->sortable(),
                 ])
-                ->modifyQueryUsing(function (Builder $query, Table $table): Builder {
-                    $search = trim((string) ($table->getLivewire()->tableSearch ?? ''));
-
-                    if ($search === '') {
-                        return $query;
-                    }
-
-                    $term = '%' . addcslashes($search, '%_\\') . '%';
-
-                    return $query->where(function (Builder $query) use ($term): void {
-                        $query
-                            ->where('control_number', 'like', $term)
-                            ->orWhere('name', 'like', $term);
-                    });
-                })
                 ->recordActions([
                     $this->getViewControlAction(),
                     $this->getEditControlAction(),
                     $this->getArchiveControlAction(),
                     $this->getRestoreControlAction(),
                 ]),
+            ),
+            function (Builder $query, string $term): void {
+                $query
+                    ->where('control_number', 'like', $term)
+                    ->orWhere('name', 'like', $term);
+            },
         );
     }
 
     protected function configureGroupsTable(Table $table): Table
     {
-        return ProductControlGroupTableConfiguration::applyListLayout(
+        return ProductCatalogTableSearch::apply(
+            ProductControlGroupTableConfiguration::applyListLayout(
             $table
                 ->query(ProductControlGroup::query())
                 ->defaultSort('group_number', 'asc')
@@ -178,28 +172,19 @@ class Controls extends Page implements HasTable
                         ->date()
                         ->sortable(),
                 ])
-                ->modifyQueryUsing(function (Builder $query, Table $table): Builder {
-                    $search = trim((string) ($table->getLivewire()->tableSearch ?? ''));
-
-                    if ($search === '') {
-                        return $query;
-                    }
-
-                    $term = '%' . addcslashes($search, '%_\\') . '%';
-
-                    return $query->where(function (Builder $query) use ($term): void {
-                        $query
-                            ->where('group_number', 'like', $term)
-                            ->orWhere('name', 'like', $term)
-                            ->orWhereHas('controls', fn (Builder $query): Builder => $query->where('name', 'like', $term));
-                    });
-                })
                 ->recordActions([
                     $this->getViewGroupAction(),
                     $this->getEditGroupAction(),
                     $this->getArchiveGroupAction(),
                     $this->getRestoreGroupAction(),
                 ]),
+            ),
+            function (Builder $query, string $term): void {
+                $query
+                    ->where('group_number', 'like', $term)
+                    ->orWhere('name', 'like', $term)
+                    ->orWhereHas('controls', fn (Builder $query): Builder => $query->where('name', 'like', $term));
+            },
         );
     }
 

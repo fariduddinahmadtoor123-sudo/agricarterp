@@ -62,4 +62,15 @@
             @endif
         </div>
     </div>
+
+    @if (count($products) > 0)
+        <div class="catalog-section catalog-section--spaced">
+            <h2 class="catalog-section__title">Products</h2>
+            <div class="catalog-product-grid">
+                @foreach ($products as $product)
+                    @include('catalog.partials.product-card', ['product' => $product])
+                @endforeach
+            </div>
+        </div>
+    @endif
 @endsection

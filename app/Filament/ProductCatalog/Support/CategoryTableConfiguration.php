@@ -34,7 +34,7 @@ class CategoryTableConfiguration
 
     public static function applyListLayout(Table $table): Table
     {
-        return $table
+        $table = $table
             ->extraAttributes([
                 'class' => 'agricart-contacts-list agricart-contacts-list-categories',
             ])
@@ -43,7 +43,6 @@ class CategoryTableConfiguration
             ->filtersFormWidth(Width::Large)
             ->deferFilters(false)
             ->hiddenFilterIndicators()
-            ->filtersTriggerAction(fn ($action) => ProductCatalogListToolbar::configureMoreFiltersTrigger($action))
             ->filtersFormSchema(fn (array $filters): array => [
                 ProductCatalogListToolbar::primaryFiltersGroup($filters, static::primaryFilterKeys(), [
                     'status' => 'agricart-category-filter-status-wrap',
@@ -52,6 +51,12 @@ class CategoryTableConfiguration
                 ]),
                 ...ProductCatalogListToolbar::moreFilterComponents($filters, static::moreFilterKeys()),
             ]);
+
+        if (ProductCatalogListToolbar::hasMoreFilters(static::moreFilterKeys())) {
+            $table->filtersTriggerAction(fn ($action) => ProductCatalogListToolbar::configureMoreFiltersTrigger($action));
+        }
+
+        return $table;
     }
 
     /**

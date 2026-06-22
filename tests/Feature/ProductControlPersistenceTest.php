@@ -6,6 +6,7 @@ use App\Models\ProductControl;
 use App\Models\User;
 use App\Services\ProductCatalog\ProductControlCodeGenerator;
 use App\Services\ProductCatalog\ProductControlPersistenceService;
+use Database\Seeders\StandardProductControlsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
@@ -155,5 +156,65 @@ class ProductControlPersistenceTest extends TestCase
 
         $this->expectException(\Symfony\Component\HttpKernel\Exception\HttpException::class);
         app(ProductControlPersistenceService::class)->archive($control);
+    }
+
+    public function test_standard_product_controls_seeder_is_idempotent(): void
+    {
+        $this->seed(StandardProductControlsSeeder::class);
+        $firstCount = ProductControl::query()->count();
+
+        $this->seed(StandardProductControlsSeeder::class);
+        $secondCount = ProductControl::query()->count();
+
+        $this->assertSame(126, $firstCount);
+        $this->assertSame(126, $secondCount);
+    }
+
+    public function test_standard_product_controls_catalog_has_one_hundred_twenty_six_unique_names(): void
+    {
+        $controls = StandardProductControlsSeeder::standardControls();
+
+        $this->assertCount(126, $controls);
+        $this->assertCount(126, array_unique(array_map(
+            fn (array $control): string => ProductControl::normalizeName($control['name']),
+            $controls,
+        )));
+
+        $this->assertNotContains('Grade A bearing steel guaranteed', array_column($controls, 'name'));
+        $this->assertNotContains('Balanced rotor guaranteed', array_column($controls, 'name'));
+        $this->assertNotContains('Heat-treated gear guaranteed', array_column($controls, 'name'));
+        $this->assertNotContains('Pump impeller material as specified guaranteed', array_column($controls, 'name'));
+    }
+
+    public function test_standard_product_controls_seeder_includes_approved_revisions(): void
+    {
+        $this->seed(StandardProductControlsSeeder::class);
+
+        foreach ([
+            'Warranty claim requires original invoice',
+            'Installation required by qualified technician',
+            'Check product before accepting delivery',
+            'Product specifications may vary by manufacturer',
+        ] as $name) {
+            $this->assertNotNull(
+                ProductControl::query()->whereNormalizedName($name)->first(),
+                "Missing standard control: {$name}",
+            );
+        }
+    }
+
+    public function test_standard_product_controls_seeder_type_counts(): void
+    {
+        $controls = StandardProductControlsSeeder::standardControls();
+
+        $counts = array_count_values(array_column($controls, 'control_type'));
+
+        $this->assertSame(19, $counts[ProductControl::TYPE_WARRANTY] ?? 0);
+        $this->assertSame(14, $counts[ProductControl::TYPE_GUARANTEE] ?? 0);
+        $this->assertSame(19, $counts[ProductControl::TYPE_RETURN_POLICY] ?? 0);
+        $this->assertSame(18, $counts[ProductControl::TYPE_REPLACEMENT_POLICY] ?? 0);
+        $this->assertSame(18, $counts[ProductControl::TYPE_HANDLING_ALERT] ?? 0);
+        $this->assertSame(19, $counts[ProductControl::TYPE_USAGE_NOTE] ?? 0);
+        $this->assertSame(19, $counts[ProductControl::TYPE_WARNING] ?? 0);
     }
 }

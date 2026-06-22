@@ -5,6 +5,7 @@ namespace App\Support\Catalog;
 use App\Models\Category;
 use App\Services\ProductCatalog\CategoryHierarchyService;
 use App\Services\ProductCatalog\CategoryImageStorage;
+use App\Services\ProductCatalog\ProductCatalogQuery;
 use Illuminate\Support\Collection;
 
 class CategoryCatalogPresenter
@@ -12,12 +13,13 @@ class CategoryCatalogPresenter
     public function __construct(
         protected CategoryImageStorage $imageStorage,
         protected CategoryHierarchyService $hierarchy,
+        protected ProductCatalogQuery $productCatalogQuery,
     ) {}
 
     /**
      * @return array<string, mixed>
      */
-    public function card(Category $category): array
+    public function card(Category $category, ?int $productsCount = null): array
     {
         return [
             'id' => $category->id,
@@ -25,7 +27,7 @@ class CategoryCatalogPresenter
             'name_ur' => filled($category->name_ur) ? $category->name_ur : null,
             'category_number' => $category->category_number,
             'image_url' => $this->imageUrl($category->image_path),
-            'products_count' => (int) $category->products_count,
+            'products_count' => $productsCount ?? $this->productCatalogQuery->productCountForCategorySubtree($category),
             'children_count' => (int) ($category->children_count ?? 0),
             'url' => route('catalog.show', ['categoryId' => $category->id]),
             'is_leaf' => (bool) $category->is_leaf,
@@ -89,8 +91,13 @@ class CategoryCatalogPresenter
      */
     public function cards(Collection $categories): array
     {
+        $productCounts = $this->productCatalogQuery->productCountsForCategorySubtrees($categories);
+
         return $categories
-            ->map(fn (Category $category): array => $this->card($category))
+            ->map(fn (Category $category): array => $this->card(
+                $category,
+                $productCounts[$category->id] ?? 0,
+            ))
             ->all();
     }
 }

@@ -7,6 +7,8 @@ use App\Filament\Pages\Auth\EditProfile;
 use App\Filament\Pages\Settings\Overview as SettingsOverview;
 use App\Http\Controllers\ProductCatalog\BrandImageController;
 use App\Http\Controllers\ProductCatalog\CategoryImageController;
+use App\Http\Controllers\ProductCatalog\ProductImageController;
+use App\Http\Controllers\ProductCatalog\ProductLabelQrController;
 use App\Support\Navigation\MainMenu;
 use Filament\Enums\ThemeMode;
 use Filament\Enums\UserMenuPosition;
@@ -121,6 +123,12 @@ class AdminPanelProvider extends PanelProvider
 
                 Route::get('brand-images', BrandImageController::class)
                     ->name('product-catalog.brand-images');
+
+                Route::get('product-images', ProductImageController::class)
+                    ->name('product-catalog.product-images');
+
+                Route::get('product-label-qr', ProductLabelQrController::class)
+                    ->name('product-catalog.product-label-qr');
             });
     }
 }

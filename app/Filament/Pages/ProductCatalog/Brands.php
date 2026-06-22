@@ -5,6 +5,7 @@ namespace App\Filament\Pages\ProductCatalog;
 use App\Filament\Pages\Concerns\InteractsWithModuleSubmenuPage;
 use App\Filament\ProductCatalog\Schemas\BrandForm;
 use App\Filament\ProductCatalog\Support\BrandTableConfiguration;
+use App\Filament\ProductCatalog\Support\ProductCatalogTableSearch;
 use App\Models\Brand;
 use App\Services\ProductCatalog\BrandLogoStorage;
 use App\Services\ProductCatalog\BrandPersistenceService;
@@ -54,7 +55,8 @@ class Brands extends Page implements HasTable
     {
         $logoStorage = app(BrandLogoStorage::class);
 
-        return BrandTableConfiguration::applyListLayout(
+        return ProductCatalogTableSearch::apply(
+            BrandTableConfiguration::applyListLayout(
             $table
                 ->query(Brand::query())
                 ->defaultSort('brand_number', 'asc')
@@ -102,29 +104,20 @@ class Brands extends Page implements HasTable
                         ->date()
                         ->sortable(),
                 ])
-                ->modifyQueryUsing(function (Builder $query, Table $table): Builder {
-                    $search = trim((string) ($table->getLivewire()->tableSearch ?? ''));
-
-                    if ($search === '') {
-                        return $query;
-                    }
-
-                    $term = '%' . addcslashes($search, '%_\\') . '%';
-
-                    return $query->where(function (Builder $query) use ($term): void {
-                        $query
-                            ->where('brand_number', 'like', $term)
-                            ->orWhere('name_en', 'like', $term)
-                            ->orWhere('name_ur', 'like', $term)
-                            ->orWhereHas('categories', fn (Builder $query): Builder => $query->where('name_en', 'like', $term));
-                    });
-                })
                 ->recordActions([
                     $this->getViewBrandAction(),
                     $this->getEditBrandAction(),
                     $this->getArchiveBrandAction(),
                     $this->getRestoreBrandAction(),
                 ]),
+            ),
+            function (Builder $query, string $term): void {
+                $query
+                    ->where('brand_number', 'like', $term)
+                    ->orWhere('name_en', 'like', $term)
+                    ->orWhere('name_ur', 'like', $term)
+                    ->orWhereHas('categories', fn (Builder $query): Builder => $query->where('name_en', 'like', $term));
+            },
         );
     }
 

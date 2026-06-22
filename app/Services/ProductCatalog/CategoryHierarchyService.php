@@ -214,6 +214,25 @@ class CategoryHierarchyService
     /**
      * @return list<int>
      */
+    public function activeSubtreeCategoryIds(Category $category): array
+    {
+        $pathPrefix = addcslashes($category->full_path, '%_\\') . ' › %';
+
+        return Category::query()
+            ->active()
+            ->where(function ($query) use ($category, $pathPrefix): void {
+                $query
+                    ->where('id', $category->id)
+                    ->orWhere('full_path', 'like', $pathPrefix);
+            })
+            ->pluck('id')
+            ->map(fn ($id): int => (int) $id)
+            ->all();
+    }
+
+    /**
+     * @return list<int>
+     */
     protected function collectDescendantIds(Category $category): array
     {
         $ids = [];

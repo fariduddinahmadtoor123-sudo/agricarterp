@@ -1,0 +1,149 @@
+/*
+ * Product Catalog — printable product labels (price-tag style).
+ */
+
+.agricart-contacts-list-labels .fi-ta-record {
+    height: 100%;
+}
+
+.agricart-contacts-list-labels .fi-ta-record > div {
+    height: 100%;
+}
+
+.agricart-contacts-list-labels .fi-ta-content-grid .fi-ta-record {
+    break-inside: avoid;
+}
+
+.agricart-contacts-list-labels .fi-ta-header-cell:first-child,
+.agricart-contacts-list-labels .fi-ta-cell:first-child {
+    padding-inline: 0.25rem;
+}
+
+.agricart-product-print-label {
+    display: grid;
+    grid-template-columns: 3.25rem minmax(0, 1fr) 4.75rem;
+    gap: 0.5rem;
+    align-items: start;
+    width: 100%;
+    min-height: 6.5rem;
+    padding: 0.5rem 0.625rem;
+    border: 1px solid #111827;
+    border-radius: 0.25rem;
+    background: #ffffff;
+    color: #111827;
+    box-shadow: inset 0 0 0 1px rgb(229 231 235);
+}
+
+.agricart-product-print-label__thumb {
+    width: 3.25rem;
+    height: 3.25rem;
+    border: 1px solid rgb(209 213 219);
+    border-radius: 0.25rem;
+    background: #ffffff;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+}
+
+.agricart-product-print-label__image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 0.125rem;
+}
+
+.agricart-product-print-label__image-fallback {
+    font-size: 1rem;
+    font-weight: 700;
+    color: rgb(107 114 128);
+}
+
+.agricart-product-print-label__body {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.agricart-product-print-label__code {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #111827;
+}
+
+.agricart-product-print-label__name {
+    margin: 0;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #111827;
+    word-break: break-word;
+}
+
+.agricart-product-print-label__line {
+    font-size: 0.6875rem;
+    line-height: 1.25;
+    color: #374151;
+    word-break: break-word;
+}
+
+.agricart-product-print-label__line strong {
+    font-weight: 700;
+    color: #111827;
+}
+
+.agricart-product-print-label__line--compact {
+    font-size: 0.625rem;
+    line-height: 1.2;
+    color: #4b5563;
+}
+
+.agricart-product-print-label__qr {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+}
+
+.agricart-product-print-label__qr img {
+    width: 4.5rem;
+    height: 4.5rem;
+    display: block;
+    border: 1px solid rgb(229 231 235);
+    border-radius: 0.125rem;
+    background: #ffffff;
+}
+
+@media print {
+    .fi-sidebar,
+    .fi-topbar,
+    .agricart-module-nav,
+    .fi-ta-header-toolbar,
+    .fi-ta-pagination,
+    .fi-header,
+    .fi-page-header-actions {
+        display: none !important;
+    }
+
+    .fi-main {
+        background: #ffffff !important;
+    }
+
+    .agricart-contacts-list-labels .fi-ta-content-grid {
+        display: block !important;
+    }
+
+    .agricart-contacts-list-labels .fi-ta-record {
+        display: inline-block;
+        width: 48%;
+        vertical-align: top;
+        margin: 0 1% 0.5rem 0;
+        page-break-inside: avoid;
+    }
+
+    .agricart-product-print-label {
+        box-shadow: none;
+        border-color: #000000;
+    }
+}

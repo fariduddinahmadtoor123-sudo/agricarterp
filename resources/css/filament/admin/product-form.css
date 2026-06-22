@@ -1,0 +1,445 @@
+/*
+ * Product Catalog — compact product entry form.
+ */
+
+.agricart-product-form {
+    --agricart-product-field-gap: 0.125rem;
+    --agricart-product-block-gap: 0.25rem;
+    --agricart-product-image-size: 9.375rem;
+    --agricart-product-category-thumb: 3.5rem;
+}
+
+.agricart-product-form > .fi-sc {
+    gap: var(--agricart-product-block-gap);
+}
+
+.agricart-product-form .fi-sc {
+    gap: var(--agricart-product-field-gap);
+}
+
+.agricart-product-form .fi-section-content {
+    gap: var(--agricart-product-field-gap);
+}
+
+.agricart-product-form .fi-fo-field {
+    margin-bottom: 0;
+}
+
+.agricart-product-form .fi-fo-field-wrp-label span {
+    font-size: 0.75rem;
+}
+
+.agricart-product-form .fi-input-wrp,
+.agricart-product-form .fi-select-input {
+    min-height: 2.125rem;
+}
+
+.agricart-product-form .fi-section-header {
+    padding-block: 0.25rem 0.125rem;
+    min-height: 0;
+}
+
+.agricart-product-block {
+    padding: 0.25rem 0.375rem;
+    border: 1px solid rgb(229 231 235);
+    border-radius: 0.375rem;
+    background-color: rgb(249 250 251);
+}
+
+.agricart-product-block--intro > .fi-sc {
+    gap: 0;
+}
+
+/* Intro — category (left ~50%) + product images (right) */
+.agricart-product-intro-row > .fi-sc {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.375rem !important;
+    width: 100%;
+    align-items: start;
+}
+
+@media (min-width: 1024px) {
+    .agricart-product-intro-row > .fi-sc {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 0.5rem !important;
+    }
+}
+
+.agricart-product-intro-category {
+    width: 100%;
+    min-width: 0;
+}
+
+.agricart-product-intro-category > .fi-sc {
+    gap: 0.375rem !important;
+}
+
+.agricart-product-intro-category .fi-fo-field {
+    width: 100%;
+}
+
+.agricart-product-category-breadcrumb {
+    display: block;
+    font-size: 0.6875rem;
+    line-height: 1.3;
+    color: rgb(107 114 128);
+}
+
+.agricart-product-category-breadcrumb--empty {
+    color: rgb(156 163 175);
+    font-style: italic;
+}
+
+.agricart-product-category-hierarchy-row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    width: 100%;
+    min-height: calc(var(--agricart-product-category-thumb) + 1rem);
+    margin-top: 0.125rem;
+}
+
+.agricart-product-category-hierarchy-row--empty {
+    align-items: center;
+    border: 1px dashed rgb(229 231 235);
+    border-radius: 0.375rem;
+    background-color: #ffffff;
+    padding: 0.375rem 0.5rem;
+    min-height: calc(var(--agricart-product-category-thumb) + 0.5rem);
+}
+
+.agricart-product-category-hierarchy-empty {
+    font-size: 0.6875rem;
+    color: rgb(156 163 175);
+    font-style: italic;
+}
+
+.agricart-product-category-hierarchy-level {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    gap: 0.1875rem;
+    width: var(--agricart-product-category-thumb);
+    min-width: var(--agricart-product-category-thumb);
+}
+
+.agricart-product-category-hierarchy-level__box {
+    width: var(--agricart-product-category-thumb);
+    height: var(--agricart-product-category-thumb);
+    border: 1px solid rgb(229 231 235);
+    border-radius: 0.375rem;
+    background-color: #ffffff;
+    overflow: hidden;
+}
+
+.agricart-product-category-hierarchy-level--current .agricart-product-category-hierarchy-level__box {
+    border-color: rgb(59 130 246);
+    box-shadow: 0 0 0 1px rgb(191 219 254);
+}
+
+.agricart-product-category-hierarchy-level__media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 0.25rem;
+    overflow: hidden;
+}
+
+.agricart-product-category-hierarchy-level__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.agricart-product-category-hierarchy-level__fallback {
+    display: block;
+    padding: 0.25rem;
+    font-size: 0.5625rem;
+    font-weight: 500;
+    line-height: 1.15;
+    text-align: center;
+    word-break: break-word;
+    color: rgb(107 114 128);
+}
+
+.agricart-product-category-hierarchy-level__label {
+    font-size: 0.5625rem;
+    line-height: 1.15;
+    text-align: center;
+    color: rgb(107 114 128);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Product images — 150×150 boxes in a horizontal row */
+.agricart-product-intro-images > .fi-sc {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: flex-end !important;
+    justify-content: flex-start !important;
+    gap: 0.5rem !important;
+    width: 100%;
+}
+
+.agricart-product-main-image {
+    flex: 0 0 auto;
+}
+
+.agricart-product-main-image .fi-fo-field-wrp,
+.agricart-product-main-image .fi-fo-file-upload {
+    width: var(--agricart-product-image-size);
+}
+
+.agricart-product-main-image .filepond--root,
+.agricart-product-main-image .filepond--panel-root {
+    width: var(--agricart-product-image-size) !important;
+    height: var(--agricart-product-image-size) !important;
+    min-height: var(--agricart-product-image-size) !important;
+}
+
+.agricart-product-main-image .filepond--drop-label {
+    font-size: 0.6875rem;
+    line-height: 1.15;
+    min-height: 0;
+    padding: 0.375rem;
+}
+
+.agricart-product-main-image .fi-fo-field-wrp-label {
+    margin-bottom: 0.125rem;
+}
+
+.agricart-product-additional-images {
+    flex: 0 1 auto;
+    min-width: 0;
+}
+
+.agricart-product-additional-images > .fi-fo-repeater {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.agricart-product-additional-images .fi-fo-repeater-items {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.agricart-product-additional-images .fi-fo-repeater-item {
+    flex: 0 0 auto;
+    width: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.agricart-product-additional-images .fi-fo-repeater-item-header {
+    display: none;
+}
+
+.agricart-product-additional-images .fi-fo-file-upload,
+.agricart-product-additional-images .filepond--root,
+.agricart-product-additional-images .filepond--panel-root {
+    width: var(--agricart-product-image-size) !important;
+    height: var(--agricart-product-image-size) !important;
+    min-height: var(--agricart-product-image-size) !important;
+}
+
+.agricart-product-additional-images .filepond--drop-label {
+    font-size: 0.6875rem;
+    line-height: 1.15;
+    padding: 0.375rem;
+}
+
+.agricart-product-additional-images .fi-fo-repeater-add {
+    margin: 0;
+    flex: 0 0 auto;
+}
+
+.agricart-product-additional-images .fi-fo-repeater-add .fi-btn {
+    width: var(--agricart-product-image-size);
+    height: var(--agricart-product-image-size);
+    min-width: var(--agricart-product-image-size);
+    min-height: var(--agricart-product-image-size);
+    padding: 0;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+/* Display categories + attributes — shared row layout */
+.agricart-product-tags-attributes {
+    width: 100%;
+}
+
+.agricart-product-tags-attributes > .fi-sc {
+    display: grid;
+    grid-template-columns: minmax(13rem, 1.45fr) minmax(0, 1fr);
+    gap: 0.5rem;
+    align-items: end;
+    width: 100%;
+}
+
+.agricart-product-tags-attributes .agricart-product-display-categories.fi-fo-field {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: start;
+    margin-bottom: 0;
+    min-width: 0;
+}
+
+.agricart-product-display-categories .choices__list--multiple {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.1875rem;
+    min-height: 1.75rem;
+}
+
+.agricart-product-tags-attributes .agricart-product-attribute-repeater.fi-fo-field {
+    grid-column: 2;
+    grid-row: 1;
+    margin-bottom: 0;
+    min-width: 0;
+    width: 100%;
+}
+
+.agricart-product-attribute-repeater .fi-fo-repeater {
+    display: grid;
+    width: 100%;
+    grid-template-columns: minmax(7rem, 1fr) minmax(4.5rem, 0.5fr) 2.25rem;
+    column-gap: 0.5rem;
+    row-gap: 0.25rem;
+    align-items: end;
+}
+
+.agricart-product-attribute-repeater .fi-fo-repeater-items {
+    grid-column: 1 / 3;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    width: 100%;
+    min-width: 0;
+}
+
+.agricart-product-attribute-repeater .fi-fo-repeater-item {
+    position: relative;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    width: 100%;
+}
+
+.agricart-product-attribute-repeater .fi-fo-repeater-item-header {
+    display: none;
+}
+
+.agricart-product-attribute-repeater .fi-fo-repeater-item-content {
+    width: 100%;
+    padding: 0;
+}
+
+.agricart-product-attribute-repeater .fi-fo-repeater-item-content > .fi-sc {
+    display: grid !important;
+    grid-template-columns: minmax(7rem, 1fr) minmax(4.5rem, 0.5fr);
+    gap: 0.5rem !important;
+    align-items: center;
+    width: 100%;
+}
+
+.agricart-product-attribute-repeater .fi-fo-repeater-item .fi-fo-field {
+    min-width: 0;
+    width: 100%;
+}
+
+.agricart-product-attribute-repeater .fi-fo-repeater-add {
+    grid-column: 3;
+    grid-row: 1;
+    margin: 0;
+    align-self: end;
+}
+
+.agricart-product-attribute-repeater .fi-fo-repeater-add-action-ctn {
+    width: 100%;
+}
+
+.agricart-product-attribute-repeater .fi-fo-repeater-add .fi-btn {
+    min-height: 2.125rem;
+    min-width: 2.25rem;
+    width: 100%;
+    justify-content: center;
+    padding-inline: 0.375rem;
+}
+
+.agricart-product-attribute-repeater .fi-fo-repeater-item-actions {
+    position: absolute;
+    right: -0.125rem;
+    top: -0.125rem;
+}
+
+.agricart-product-form-readonly .agricart-product-attribute-repeater .fi-fo-repeater-add,
+.agricart-product-form-readonly .agricart-product-attribute-repeater .fi-fo-repeater-item-actions {
+    display: none;
+}
+
+/* Controls — side by side */
+.agricart-product-block--controls .choices__list--multiple {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.1875rem;
+}
+
+.fi-modal-window:has(.agricart-product-form) .fi-modal-content {
+    padding-block: 0.375rem;
+}
+
+.fi-modal-window:has(.agricart-product-form) .fi-section-content {
+    gap: var(--agricart-product-field-gap);
+}
+
+.fi-modal-window:has(.agricart-product-form) .fi-section {
+    margin-top: 0.125rem;
+}
+
+.fi-modal-window:has(.agricart-product-form) .fi-section-header {
+    padding-block: 0.125rem 0.0625rem;
+}
+
+.agricart-product-table-image {
+    border-radius: 0.375rem;
+    object-fit: cover;
+}
+
+@media (max-width: 1023px) {
+    .agricart-product-intro-images > .fi-sc {
+        justify-content: flex-start !important;
+    }
+
+    .agricart-product-tags-attributes > .fi-sc {
+        display: flex;
+        flex-direction: column;
+        gap: 0.375rem;
+    }
+
+    .agricart-product-tags-attributes .agricart-product-attribute-repeater.fi-fo-field {
+        width: 100%;
+    }
+
+    .agricart-product-attribute-repeater .fi-fo-repeater {
+        display: block;
+    }
+
+    .agricart-product-attribute-repeater .fi-fo-repeater-add {
+        margin-top: 0.25rem;
+    }
+}

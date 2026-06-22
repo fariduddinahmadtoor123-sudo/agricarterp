@@ -6,6 +6,8 @@ use App\Filament\Pages\ProductCatalog\Attributes;
 use App\Filament\Pages\ProductCatalog\Brands;
 use App\Filament\Pages\ProductCatalog\Categories;
 use App\Filament\Pages\ProductCatalog\Controls;
+use App\Filament\Pages\ProductCatalog\Labels;
+use App\Filament\Pages\ProductCatalog\Products;
 use App\Filament\Pages\ProductCatalog\Units;
 use Filament\Actions\Action;
 use Filament\Schemas\Components\Group;
@@ -18,7 +20,7 @@ class ProductCatalogListToolbar
 {
     public static function register(): void
     {
-        foreach ([Categories::class, Brands::class, Units::class, Attributes::class, Controls::class] as $page) {
+        foreach ([Categories::class, Brands::class, Units::class, Attributes::class, Controls::class, Products::class, Labels::class] as $page) {
             FilamentView::registerRenderHook(
                 TablesRenderHook::TOOLBAR_SEARCH_AFTER,
                 fn (): string => '<span data-agricart-primary-filters-anchor class="agricart-contacts-primary-filters-anchor"></span>',
@@ -92,5 +94,13 @@ class ProductCatalogListToolbar
             ->button()
             ->outlined()
             ->color('gray');
+    }
+
+    /**
+     * @param  list<string>  $moreFilterKeys
+     */
+    public static function hasMoreFilters(array $moreFilterKeys): bool
+    {
+        return $moreFilterKeys !== [];
     }
 }

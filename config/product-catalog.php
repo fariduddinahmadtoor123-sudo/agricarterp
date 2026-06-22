@@ -77,4 +77,19 @@ return [
         'usage_note' => 'Usage Note',
         'warning' => 'Warning',
     ],
+
+    'product_image_disk' => env('PRODUCT_CATALOG_PRODUCT_IMAGE_DISK', 'local'),
+
+    'product_statuses' => [
+        'active' => 'Active',
+        'archived' => 'Archived',
+    ],
+
+    'product_ai_statuses' => [
+        'pending' => 'Pending',
+        'processing' => 'Processing',
+        'complete' => 'Complete',
+        'review' => 'Review',
+        'failed' => 'Failed',
+    ],
 ];

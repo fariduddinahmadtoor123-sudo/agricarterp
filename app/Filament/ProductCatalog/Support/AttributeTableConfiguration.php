@@ -28,7 +28,7 @@ class AttributeTableConfiguration
 
     public static function applyListLayout(Table $table): Table
     {
-        return $table
+        $table = $table
             ->extraAttributes([
                 'class' => 'agricart-contacts-list agricart-contacts-list-attributes',
             ])
@@ -37,12 +37,17 @@ class AttributeTableConfiguration
             ->filtersFormWidth(Width::Large)
             ->deferFilters(false)
             ->hiddenFilterIndicators()
-            ->filtersTriggerAction(fn ($action) => ProductCatalogListToolbar::configureMoreFiltersTrigger($action))
             ->filtersFormSchema(fn (array $filters): array => [
                 ProductCatalogListToolbar::primaryFiltersGroup($filters, static::primaryFilterKeys(), [
                     'status' => 'agricart-attribute-filter-status-wrap',
                 ]),
             ]);
+
+        if (ProductCatalogListToolbar::hasMoreFilters(static::moreFilterKeys())) {
+            $table->filtersTriggerAction(fn ($action) => ProductCatalogListToolbar::configureMoreFiltersTrigger($action));
+        }
+
+        return $table;
     }
 
     /**
