@@ -4,6 +4,10 @@
 @import './contacts-customer-form.css';
 @import './contacts-list-toolbar.css';
 @import './category-form.css';
+@import './brand-form.css';
+@import './unit-form.css';
+@import './attribute-form.css';
+@import './product-control-form.css';
 
 @theme {
     --color-agricart-green: #83b735;

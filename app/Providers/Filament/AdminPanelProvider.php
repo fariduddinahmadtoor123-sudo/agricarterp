@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\AvatarProviders\AgricartAvatarProvider;
 use App\Filament\Pages\Auth\EditProfile;
 use App\Filament\Pages\Settings\Overview as SettingsOverview;
+use App\Http\Controllers\ProductCatalog\BrandImageController;
 use App\Http\Controllers\ProductCatalog\CategoryImageController;
 use App\Support\Navigation\MainMenu;
 use Filament\Enums\ThemeMode;
@@ -117,6 +118,9 @@ class AdminPanelProvider extends PanelProvider
             ->authenticatedRoutes(function (): void {
                 Route::get('category-images', CategoryImageController::class)
                     ->name('product-catalog.category-images');
+
+                Route::get('brand-images', BrandImageController::class)
+                    ->name('product-catalog.brand-images');
             });
     }
 }

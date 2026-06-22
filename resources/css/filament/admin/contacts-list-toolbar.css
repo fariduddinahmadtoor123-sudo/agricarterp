@@ -382,3 +382,177 @@
         justify-content: center;
     }
 }
+
+/* Brands — primary filters (Status, Category) */
+.agricart-contacts-list-brands.fi-ta .fi-ta-search-field {
+    flex: 0 0 11.5rem;
+    min-width: 10rem;
+    max-width: 11.5rem;
+    width: 11.5rem;
+}
+
+.agricart-contacts-list-brands.fi-ta .agricart-contacts-primary-filters {
+    flex: 1 1 auto;
+}
+
+.agricart-contacts-list-brands.fi-ta .agricart-contacts-primary-filters .fi-fo-field-wrp {
+    width: auto;
+    flex: 0 0 auto;
+    min-width: 0;
+}
+
+.agricart-contacts-list-brands.fi-ta .agricart-contacts-primary-filters .agricart-brand-filter-status-wrap {
+    width: 11rem;
+    flex: 0 0 11rem;
+    min-width: 11rem;
+}
+
+.agricart-contacts-list-brands.fi-ta .agricart-contacts-primary-filters .agricart-brand-filter-category-wrap {
+    width: 14rem;
+    flex: 0 0 14rem;
+    min-width: 14rem;
+}
+
+@media (max-width: 1023px) {
+    .agricart-contacts-list-brands.fi-ta .agricart-contacts-primary-filters .agricart-brand-filter-status-wrap,
+    .agricart-contacts-list-brands.fi-ta .agricart-contacts-primary-filters .agricart-brand-filter-category-wrap {
+        flex: 1 1 calc(50% - 0.3125rem);
+        width: auto;
+        min-width: 0;
+    }
+}
+
+/* Units — primary filters (Status, Unit Type) */
+.agricart-contacts-list-units.fi-ta .fi-ta-search-field {
+    flex: 0 0 11.5rem;
+    min-width: 10rem;
+    max-width: 11.5rem;
+    width: 11.5rem;
+}
+
+.agricart-contacts-list-units.fi-ta .agricart-contacts-primary-filters {
+    flex: 1 1 auto;
+}
+
+.agricart-contacts-list-units.fi-ta .agricart-contacts-primary-filters .fi-fo-field-wrp {
+    width: auto;
+    flex: 0 0 auto;
+    min-width: 0;
+}
+
+.agricart-contacts-list-units.fi-ta .agricart-contacts-primary-filters .agricart-unit-filter-status-wrap {
+    width: 11rem;
+    flex: 0 0 11rem;
+    min-width: 11rem;
+}
+
+.agricart-contacts-list-units.fi-ta .agricart-contacts-primary-filters .agricart-unit-filter-type-wrap {
+    width: 13rem;
+    flex: 0 0 13rem;
+    min-width: 13rem;
+}
+
+@media (max-width: 1023px) {
+    .agricart-contacts-list-units.fi-ta .agricart-contacts-primary-filters .agricart-unit-filter-status-wrap,
+    .agricart-contacts-list-units.fi-ta .agricart-contacts-primary-filters .agricart-unit-filter-type-wrap {
+        flex: 1 1 calc(50% - 0.3125rem);
+        width: auto;
+        min-width: 0;
+    }
+}
+
+/* Attributes — primary filters (Status, Attribute Type) */
+.agricart-contacts-list-attributes.fi-ta .fi-ta-search-field {
+    flex: 0 0 11.5rem;
+    min-width: 10rem;
+    max-width: 11.5rem;
+    width: 11.5rem;
+}
+
+.agricart-contacts-list-attributes.fi-ta .agricart-contacts-primary-filters {
+    flex: 1 1 auto;
+}
+
+.agricart-contacts-list-attributes.fi-ta .agricart-contacts-primary-filters .fi-fo-field-wrp {
+    width: auto;
+    flex: 0 0 auto;
+    min-width: 0;
+}
+
+.agricart-contacts-list-attributes.fi-ta .agricart-contacts-primary-filters .agricart-attribute-filter-status-wrap {
+    width: 11rem;
+    flex: 0 0 11rem;
+    min-width: 11rem;
+}
+
+@media (max-width: 1023px) {
+    .agricart-contacts-list-attributes.fi-ta .agricart-contacts-primary-filters .agricart-attribute-filter-status-wrap {
+        flex: 1 1 100%;
+        width: auto;
+        min-width: 0;
+    }
+}
+
+/* Product Controls — primary filters (Status) */
+.agricart-contacts-list-controls.fi-ta .fi-ta-search-field {
+    flex: 0 0 11.5rem;
+    min-width: 10rem;
+    max-width: 11.5rem;
+    width: 11.5rem;
+}
+
+.agricart-contacts-list-controls.fi-ta .agricart-contacts-primary-filters {
+    flex: 1 1 auto;
+}
+
+.agricart-contacts-list-controls.fi-ta .agricart-contacts-primary-filters .fi-fo-field-wrp {
+    width: auto;
+    flex: 0 0 auto;
+    min-width: 0;
+}
+
+.agricart-contacts-list-controls.fi-ta .agricart-contacts-primary-filters .agricart-control-filter-status-wrap {
+    width: 11rem;
+    flex: 0 0 11rem;
+    min-width: 11rem;
+}
+
+@media (max-width: 1023px) {
+    .agricart-contacts-list-controls.fi-ta .agricart-contacts-primary-filters .agricart-control-filter-status-wrap {
+        flex: 1 1 100%;
+        width: auto;
+        min-width: 0;
+    }
+}
+
+/* Control Groups — primary filters (Status) */
+.agricart-contacts-list-control-groups.fi-ta .fi-ta-search-field {
+    flex: 0 0 11.5rem;
+    min-width: 10rem;
+    max-width: 11.5rem;
+    width: 11.5rem;
+}
+
+.agricart-contacts-list-control-groups.fi-ta .agricart-contacts-primary-filters {
+    flex: 1 1 auto;
+}
+
+.agricart-contacts-list-control-groups.fi-ta .agricart-contacts-primary-filters .fi-fo-field-wrp {
+    width: auto;
+    flex: 0 0 auto;
+    min-width: 0;
+}
+
+.agricart-contacts-list-control-groups.fi-ta .agricart-contacts-primary-filters .agricart-control-group-filter-status-wrap {
+    width: 11rem;
+    flex: 0 0 11rem;
+    min-width: 11rem;
+}
+
+@media (max-width: 1023px) {
+    .agricart-contacts-list-control-groups.fi-ta .agricart-contacts-primary-filters .agricart-control-group-filter-status-wrap {
+        flex: 1 1 100%;
+        width: auto;
+        min-width: 0;
+    }
+}

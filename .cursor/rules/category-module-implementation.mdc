@@ -19,6 +19,7 @@ globs:
 ## Do NOT modify
 
 - Contacts module (frozen): Supplier, Customer, contacts services/migrations/UI
+- Product Controls module (frozen): controls, control groups, `CTL-`/`CTG-` services/migrations/UI
 - Product Catalog navigation, menus, routes, sidebar, or other submenu pages
 - `config/agricart.php` module structure (only extend `Categories` page)
 
