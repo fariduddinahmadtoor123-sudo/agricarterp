@@ -1,0 +1,183 @@
+﻿/*
+ * Product Catalog ΓÇö overview dashboard (stats + quick links).
+ */
+
+.agricart-pc-overview {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+}
+
+.agricart-pc-overview__section-header {
+    margin: 0 0 0.875rem;
+}
+
+.agricart-pc-overview__section-title {
+    margin: 0;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--agricart-text);
+}
+
+.agricart-pc-overview__section-subtitle {
+    margin: 0.25rem 0 0;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: rgb(107 114 128);
+}
+
+.agricart-pc-overview__grid {
+    display: grid;
+    gap: 0.875rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.agricart-pc-overview__card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    min-height: 7.25rem;
+    height: 100%;
+    padding: 1rem 1.05rem;
+    border: 1px solid rgb(229 231 235);
+    border-radius: 0.75rem;
+    background: linear-gradient(180deg, #ffffff 0%, rgb(248 250 248) 100%);
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+    transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+.agricart-pc-overview__card--stat {
+    position: relative;
+    overflow: hidden;
+}
+
+.agricart-pc-overview__card--stat::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 0.25rem;
+    background: linear-gradient(180deg, var(--agricart-primary) 0%, rgb(131 183 53 / 0.45) 100%);
+}
+
+.agricart-pc-overview__card--link {
+    color: var(--agricart-text);
+    text-decoration: none;
+}
+
+.agricart-pc-overview__card--link:hover,
+.agricart-pc-overview__card--link:focus-visible {
+    border-color: rgb(131 183 53 / 0.45);
+    box-shadow: 0 8px 20px rgb(131 183 53 / 0.12);
+    transform: translateY(-1px);
+}
+
+.agricart-pc-overview__card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.agricart-pc-overview__card-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 2.375rem;
+    height: 2.375rem;
+    border-radius: 0.625rem;
+    background: rgb(131 183 53 / 0.12);
+    color: var(--agricart-primary);
+}
+
+.agricart-pc-overview__card-icon--muted {
+    background: rgb(107 114 128 / 0.1);
+    color: rgb(75 85 99);
+}
+
+.agricart-pc-overview__card-value {
+    font-size: 1.625rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--agricart-text);
+    text-align: right;
+}
+
+.agricart-pc-overview__card-title {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--agricart-text);
+}
+
+.agricart-pc-overview__card-hint {
+    margin: 0;
+    font-size: 0.75rem;
+    line-height: 1.45;
+    color: rgb(107 114 128);
+}
+
+.agricart-pc-overview__card-footer {
+    margin-top: auto;
+    padding-top: 0.125rem;
+}
+
+.agricart-pc-overview__card-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--agricart-primary);
+}
+
+@media (min-width: 768px) {
+    .agricart-pc-overview__grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .agricart-pc-overview__grid--stats {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .agricart-pc-overview__grid--links {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1280px) {
+    .agricart-pc-overview__grid--stats {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .agricart-pc-overview__grid--links {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1536px) {
+    .agricart-pc-overview__grid--links {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+.dark .agricart-pc-overview__card {
+    border-color: rgb(55 65 81);
+    background: linear-gradient(180deg, rgb(31 41 55) 0%, rgb(17 24 39) 100%);
+    box-shadow: none;
+}
+
+.dark .agricart-pc-overview__section-subtitle,
+.dark .agricart-pc-overview__card-hint {
+    color: rgb(156 163 175);
+}
+
+.dark .agricart-pc-overview__card-icon--muted {
+    background: rgb(75 85 99 / 0.35);
+    color: rgb(209 213 219);
+}
