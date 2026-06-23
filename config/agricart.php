@@ -192,6 +192,7 @@ return [
                 'purchase-planning' => 'Purchase Planning',
                 'purchase-quotations' => 'Purchase Quotations',
                 'purchases' => 'Purchases',
+                'purchase-payment-sheet' => 'Purchase Payment Sheet',
                 're-order-center' => 'Re-Order Center',
                 'price-tags' => 'Price Tags',
             ],
@@ -200,6 +201,7 @@ return [
                 'purchase-planning' => \Filament\Support\Icons\Heroicon::OutlinedClipboardDocumentList,
                 'purchase-quotations' => \Filament\Support\Icons\Heroicon::OutlinedDocumentText,
                 'purchases' => \Filament\Support\Icons\Heroicon::OutlinedTruck,
+                'purchase-payment-sheet' => \Filament\Support\Icons\Heroicon::OutlinedBanknotes,
                 're-order-center' => \Filament\Support\Icons\Heroicon::OutlinedArrowPath,
                 'price-tags' => \Filament\Support\Icons\Heroicon::OutlinedTag,
             ],
@@ -208,8 +210,37 @@ return [
                 'purchase-planning' => \App\Filament\Pages\PurchasingInventory\PurchasePlanning::class,
                 'purchase-quotations' => \App\Filament\Pages\PurchasingInventory\PurchaseQuotations::class,
                 'purchases' => \App\Filament\Pages\PurchasingInventory\Purchases::class,
+                'purchase-payment-sheet' => \App\Filament\Pages\PurchasingInventory\PurchasePaymentSheet::class,
                 're-order-center' => \App\Filament\Pages\PurchasingInventory\ReOrderCenter::class,
                 'price-tags' => \App\Filament\Pages\PurchasingInventory\PriceTags::class,
+            ],
+        ],
+        'logistics' => [
+            'label' => 'Logistics',
+            'icon' => \Filament\Support\Icons\Heroicon::OutlinedTruck,
+            'sort' => 45,
+            'submenus' => [
+                'overview' => 'Overview',
+            ],
+            'submenu_icons' => [
+                'overview' => \Filament\Support\Icons\Heroicon::OutlinedSquares2x2,
+            ],
+            'pages' => [
+                'overview' => \App\Filament\Pages\Logistics\Overview::class,
+            ],
+        ],
+        'service-center' => [
+            'label' => 'Service Center',
+            'icon' => \Filament\Support\Icons\Heroicon::OutlinedWrenchScrewdriver,
+            'sort' => 55,
+            'submenus' => [
+                'overview' => 'Overview',
+            ],
+            'submenu_icons' => [
+                'overview' => \Filament\Support\Icons\Heroicon::OutlinedSquares2x2,
+            ],
+            'pages' => [
+                'overview' => \App\Filament\Pages\ServiceCenter\Overview::class,
             ],
         ],
         'sales-pos' => [
