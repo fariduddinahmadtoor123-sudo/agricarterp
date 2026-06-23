@@ -30,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
     {
         ContactsListToolbar::register();
         ProductCatalogListToolbar::register();
+        \App\Filament\PurchasingInventory\Support\PurchasingInventoryListToolbar::register();
 
         Relation::enforceMorphMap([
             ContactMobileNumber::CONTACTABLE_SUPPLIER => Supplier::class,

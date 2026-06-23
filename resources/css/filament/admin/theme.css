@@ -11,6 +11,12 @@
 @import './product-form.css';
 @import './product-labels.css';
 @import './product-catalog-overview.css';
+@import './purchase-planning-worksheet.css';
+@import './purchase-quotation-worksheet.css';
+@import './purchase-worksheet.css';
+@import './purchase-payment-sheet-worksheet.css';
+@import './re-order-center.css';
+@import './price-tags.css';
 
 @theme {
     --color-agricart-green: #83b735;

@@ -215,34 +215,6 @@ return [
                 'price-tags' => \App\Filament\Pages\PurchasingInventory\PriceTags::class,
             ],
         ],
-        'logistics' => [
-            'label' => 'Logistics',
-            'icon' => \Filament\Support\Icons\Heroicon::OutlinedTruck,
-            'sort' => 45,
-            'submenus' => [
-                'overview' => 'Overview',
-            ],
-            'submenu_icons' => [
-                'overview' => \Filament\Support\Icons\Heroicon::OutlinedSquares2x2,
-            ],
-            'pages' => [
-                'overview' => \App\Filament\Pages\Logistics\Overview::class,
-            ],
-        ],
-        'service-center' => [
-            'label' => 'Service Center',
-            'icon' => \Filament\Support\Icons\Heroicon::OutlinedWrenchScrewdriver,
-            'sort' => 55,
-            'submenus' => [
-                'overview' => 'Overview',
-            ],
-            'submenu_icons' => [
-                'overview' => \Filament\Support\Icons\Heroicon::OutlinedSquares2x2,
-            ],
-            'pages' => [
-                'overview' => \App\Filament\Pages\ServiceCenter\Overview::class,
-            ],
-        ],
         'sales-pos' => [
             'label' => 'Sales & POS',
             'icon' => \Filament\Support\Icons\Heroicon::OutlinedShoppingCart,
@@ -270,6 +242,69 @@ return [
                 'sales-quotations' => \App\Filament\Pages\SalesPos\SalesQuotations::class,
                 'sales-invoices' => \App\Filament\Pages\SalesPos\SalesInvoices::class,
                 'sales-returns' => \App\Filament\Pages\SalesPos\SalesReturns::class,
+            ],
+        ],
+        'online-store' => [
+            'label' => 'Online Store',
+            'icon' => \Filament\Support\Icons\Heroicon::OutlinedGlobeAlt,
+            'sort' => 52,
+            'submenus' => [
+                'overview' => 'Overview',
+                'store-settings' => 'Store Settings',
+                'homepage-builder' => 'Homepage Builder',
+                'menu-manager' => 'Menu Manager',
+                'banner-manager' => 'Banner Manager',
+                'pages' => 'Pages',
+                'store-navigation' => 'Store Navigation',
+                'theme-settings' => 'Theme Settings',
+            ],
+            'submenu_icons' => [
+                'overview' => \Filament\Support\Icons\Heroicon::OutlinedSquares2x2,
+                'store-settings' => \Filament\Support\Icons\Heroicon::OutlinedCog6Tooth,
+                'homepage-builder' => \Filament\Support\Icons\Heroicon::OutlinedHomeModern,
+                'menu-manager' => \Filament\Support\Icons\Heroicon::OutlinedBars3,
+                'banner-manager' => \Filament\Support\Icons\Heroicon::OutlinedPhoto,
+                'pages' => \Filament\Support\Icons\Heroicon::OutlinedDocumentText,
+                'store-navigation' => \Filament\Support\Icons\Heroicon::OutlinedMap,
+                'theme-settings' => \Filament\Support\Icons\Heroicon::OutlinedSwatch,
+            ],
+            'pages' => [
+                'overview' => \App\Filament\Pages\OnlineStore\Overview::class,
+                'store-settings' => \App\Filament\Pages\OnlineStore\StoreSettings::class,
+                'homepage-builder' => \App\Filament\Pages\OnlineStore\HomepageBuilder::class,
+                'menu-manager' => \App\Filament\Pages\OnlineStore\MenuManager::class,
+                'banner-manager' => \App\Filament\Pages\OnlineStore\BannerManager::class,
+                'pages' => \App\Filament\Pages\OnlineStore\StorePages::class,
+                'store-navigation' => \App\Filament\Pages\OnlineStore\StoreNavigation::class,
+                'theme-settings' => \App\Filament\Pages\OnlineStore\ThemeSettings::class,
+            ],
+        ],
+        'logistics' => [
+            'label' => 'Logistics',
+            'icon' => \Filament\Support\Icons\Heroicon::OutlinedTruck,
+            'sort' => 55,
+            'submenus' => [
+                'overview' => 'Overview',
+            ],
+            'submenu_icons' => [
+                'overview' => \Filament\Support\Icons\Heroicon::OutlinedSquares2x2,
+            ],
+            'pages' => [
+                'overview' => \App\Filament\Pages\Logistics\Overview::class,
+            ],
+        ],
+        'service-center' => [
+            'label' => 'Service Center',
+            'icon' => \Filament\Support\Icons\Heroicon::OutlinedWrenchScrewdriver,
+            'sort' => 56,
+            'submenus' => [
+                'overview' => 'Overview',
+            ],
+            'submenu_icons' => [
+                'overview' => \Filament\Support\Icons\Heroicon::OutlinedSquares2x2,
+            ],
+            'pages' => [
+                'overview' => \App\Filament\Pages\ServiceCenter\Overview::class,
             ],
         ],
         'reports-analytics' => [
@@ -343,41 +378,6 @@ return [
                 'advances' => \App\Filament\Pages\StaffManagement\Advances::class,
                 'payroll' => \App\Filament\Pages\StaffManagement\Payroll::class,
                 'staff-reports' => \App\Filament\Pages\StaffManagement\StaffReports::class,
-            ],
-        ],
-        'online-store' => [
-            'label' => 'Online Store',
-            'icon' => \Filament\Support\Icons\Heroicon::OutlinedGlobeAlt,
-            'sort' => 80,
-            'submenus' => [
-                'overview' => 'Overview',
-                'store-settings' => 'Store Settings',
-                'homepage-builder' => 'Homepage Builder',
-                'menu-manager' => 'Menu Manager',
-                'banner-manager' => 'Banner Manager',
-                'pages' => 'Pages',
-                'store-navigation' => 'Store Navigation',
-                'theme-settings' => 'Theme Settings',
-            ],
-            'submenu_icons' => [
-                'overview' => \Filament\Support\Icons\Heroicon::OutlinedSquares2x2,
-                'store-settings' => \Filament\Support\Icons\Heroicon::OutlinedCog6Tooth,
-                'homepage-builder' => \Filament\Support\Icons\Heroicon::OutlinedHomeModern,
-                'menu-manager' => \Filament\Support\Icons\Heroicon::OutlinedBars3,
-                'banner-manager' => \Filament\Support\Icons\Heroicon::OutlinedPhoto,
-                'pages' => \Filament\Support\Icons\Heroicon::OutlinedDocumentText,
-                'store-navigation' => \Filament\Support\Icons\Heroicon::OutlinedMap,
-                'theme-settings' => \Filament\Support\Icons\Heroicon::OutlinedSwatch,
-            ],
-            'pages' => [
-                'overview' => \App\Filament\Pages\OnlineStore\Overview::class,
-                'store-settings' => \App\Filament\Pages\OnlineStore\StoreSettings::class,
-                'homepage-builder' => \App\Filament\Pages\OnlineStore\HomepageBuilder::class,
-                'menu-manager' => \App\Filament\Pages\OnlineStore\MenuManager::class,
-                'banner-manager' => \App\Filament\Pages\OnlineStore\BannerManager::class,
-                'pages' => \App\Filament\Pages\OnlineStore\StorePages::class,
-                'store-navigation' => \App\Filament\Pages\OnlineStore\StoreNavigation::class,
-                'theme-settings' => \App\Filament\Pages\OnlineStore\ThemeSettings::class,
             ],
         ],
         'finance-accounts' => [
