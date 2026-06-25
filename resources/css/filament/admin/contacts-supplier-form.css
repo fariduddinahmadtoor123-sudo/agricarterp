@@ -1,0 +1,147 @@
+/*
+ * Contacts module — Supplier form layout (scoped; does not alter UI Foundation).
+ */
+
+.agricart-supplier-form {
+    --agricart-supplier-field-gap: 0.375rem;
+    --agricart-supplier-section-gap: 0.5rem;
+    --agricart-supplier-bank-gap: 0.625rem;
+}
+
+.agricart-supplier-form .fi-sc {
+    gap: var(--agricart-supplier-section-gap);
+}
+
+.agricart-supplier-form .fi-section {
+    gap: var(--agricart-supplier-section-gap);
+}
+
+.agricart-supplier-form .fi-section-header {
+    padding-block: 0.125rem 0;
+}
+
+.agricart-supplier-form .fi-section-content {
+    gap: var(--agricart-supplier-field-gap);
+    padding-top: 0;
+}
+
+.agricart-supplier-form .fi-fo-field {
+    margin-bottom: 0;
+}
+
+.agricart-supplier-form .fi-fo-field-wrp-label span {
+    font-size: 0.8125rem;
+}
+
+.agricart-supplier-form .fi-fo-fieldset {
+    gap: var(--agricart-supplier-field-gap);
+}
+
+.agricart-supplier-form .fi-fo-repeater .fi-fo-repeater-item-header {
+    display: none;
+}
+
+/* Inline full address on row 1 — single-line height */
+.agricart-supplier-form textarea.agricart-supplier-address-inline {
+    min-height: 2.375rem;
+    max-height: 2.375rem;
+    resize: none;
+    overflow-y: auto;
+}
+
+@media (min-width: 1024px) {
+    /*
+     * Only business/urdu sections use the 12-column grid.
+     * Do not apply globally — other sections (e.g. Additional Information)
+     * have fewer children and will squash without matching column spans.
+     */
+    .agricart-supplier-form .fi-sc-section.agricart-supplier-grid-section .fi-section-content {
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+}
+
+/*
+ * Bank row: fields left (usable widths) | [+ Add Bank] right — same row.
+ * Do NOT use display:contents (breaks Filament field wrappers).
+ */
+@media (min-width: 1024px) {
+    .agricart-supplier-form .fi-fo-field.agricart-bank-repeater .fi-fo-repeater {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 6.75rem;
+        column-gap: var(--agricart-supplier-bank-gap);
+        align-items: end;
+        row-gap: var(--agricart-supplier-field-gap);
+    }
+
+    .agricart-supplier-form .fi-fo-field.agricart-bank-repeater .fi-fo-repeater-items {
+        grid-column: 1;
+        grid-row: 1;
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--agricart-supplier-field-gap);
+    }
+
+    .agricart-supplier-form .fi-fo-field.agricart-bank-repeater .fi-fo-repeater-item {
+        position: relative;
+        width: 100%;
+    }
+
+    .agricart-supplier-form .fi-fo-field.agricart-bank-repeater .fi-fo-repeater-item-content {
+        width: 100%;
+        padding: 0.5625rem 0.75rem;
+    }
+
+    .agricart-supplier-form .fi-fo-field.agricart-bank-repeater .fi-fo-repeater-item-content > .fi-sc {
+        width: 100%;
+        gap: var(--agricart-supplier-bank-gap);
+        align-items: end;
+    }
+
+    .agricart-supplier-form .fi-fo-field.agricart-bank-repeater .fi-fo-repeater-item .fi-fo-field {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .agricart-supplier-form .fi-fo-field.agricart-bank-repeater .fi-fo-repeater-item .fi-input-wrp {
+        width: 100%;
+    }
+
+    .agricart-supplier-form .fi-fo-field.agricart-bank-repeater .fi-fo-repeater-add {
+        grid-column: 2;
+        grid-row: 1;
+        margin: 0;
+        align-self: end;
+    }
+
+    .agricart-supplier-form .fi-fo-field.agricart-bank-repeater .fi-fo-repeater-add-action-ctn {
+        width: 100%;
+    }
+
+    .agricart-supplier-form .fi-fo-field.agricart-bank-repeater .fi-fo-repeater-add-action-ctn .fi-btn {
+        width: 100%;
+        justify-content: center;
+        white-space: nowrap;
+        padding-inline: 0.5rem;
+    }
+
+    .agricart-supplier-form .fi-fo-field.agricart-bank-repeater .fi-fo-repeater-item-actions {
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+}
+
+@media (max-width: 1023px) {
+    .agricart-supplier-form .fi-fo-field.agricart-bank-repeater .fi-fo-repeater-add {
+        margin-top: 0.25rem;
+    }
+}
+
+/* View modal — read-only polish */
+.agricart-supplier-form-readonly .fi-fo-repeater-add,
+.agricart-supplier-form-readonly .fi-fo-repeater-item-actions,
+.agricart-supplier-form-readonly .fi-fo-file-upload-actions {
+    display: none !important;
+}

@@ -1,0 +1,102 @@
+---
+description: Category module implementation constraints under Product Catalog
+globs:
+  - app/Filament/Pages/ProductCatalog/Categories.php
+  - app/Filament/ProductCatalog/**
+  - app/Models/Category*.php
+  - app/Services/ProductCatalog/**
+  - app/Support/ProductCatalog/**
+  - config/product-catalog.php
+  - database/migrations/*categor*
+  - resources/css/filament/admin/categories-*.css
+  - tests/**/*Category*
+---
+
+# Category Module — Implementation Constraints
+
+**Status:** Approved design — implement on `develop` only.
+
+## Do NOT modify
+
+- Contacts module (frozen): Supplier, Customer, contacts services/migrations/UI
+- Product Controls module (frozen): controls, control groups, `CTL-`/`CTG-` services/migrations/UI
+- Product Catalog navigation, menus, routes, sidebar, or other submenu pages
+- `config/agricart.php` module structure (only extend `Categories` page)
+
+## UI reference
+
+Match Contacts module exactly for list pages:
+
+- Single-row toolbar: Search → primary filters → More Filters → Add (far right)
+- Modal CRUD (7XL), View/Edit/Move/Archive/Restore actions
+- No bulk actions in v1
+- Reuse toolbar CSS pattern (`contacts-list-toolbar` / `categories-list-toolbar`)
+
+## Database relationships — CRITICAL
+
+Use **only** `id` and `parent_id` for tree relationships, FKs, joins, and lookups.
+
+**Never** use `visual_mapping_code` for:
+
+- Foreign keys
+- Joins
+- Lookups
+- Business logic
+- Eloquent relationships
+
+`visual_mapping_code` is display/reporting only.
+
+## Permanent identifiers
+
+| Field | Rule |
+|-------|------|
+| `category_number` (`CAT-000001`) | **Immutable** — never changes on move, archive, edit, or any operation |
+| `visual_mapping_code` | May change **only** when hierarchy location changes (move) |
+| `sort_order` | Permanent sibling slot — **no renumbering** when siblings are archived |
+
+## Move operation — CRITICAL
+
+- **Always** wrap in `DB::transaction()`
+- Update moved node + entire subtree: `parent_id`, `level`, `full_path`, `visual_mapping_code`, `is_leaf`
+- Preserve: `category_number`, image, descriptions, SEO, HS, usage, AI fields, `products_count`, product FKs
+- New parent must be `status = active`
+- Block move to self or descendant
+- Must be reversible via normal Edit/Move UI — no manual DB fixes
+
+## Archive stability
+
+- Archiving does **not** change visual mapping codes
+- Archiving does **not** renumber sibling codes
+- Cannot create or move categories under archived parents
+
+## Field rules
+
+- `name_en`: required (NOT NULL)
+- `name_ur`: optional at entry (stored as empty string until AI enrichment); NOT NULL column
+- `slug`: nullable, unique when set — AI-generated after enrichment
+- `ai_status`: defaults to `pending` on create; values: pending, processing, complete, review, failed
+- `search_terms`, `faqs_en`, `faqs_ur`: JSON nullable — AI-managed structured content
+- `is_leaf`: system-managed only — never exposed in create/edit forms
+- `products_count`: denormalized, required for list/reporting
+- Default list sort: `visual_mapping_code` ASC (hierarchy order), not `created_at` desc
+
+## Schema status
+
+**FROZEN** as of migration `2026_06_25_100001_add_category_content_and_ai_fields_to_categories_table`.
+
+Deferred to storefront/marketplace phase: `structured_data_json`, `google_product_category_id`, `marketplace_status`.
+
+## Visual mapping depth letters
+
+| Level | Letter |
+|-------|--------|
+| 0 | R |
+| 1 | M |
+| 2 | S |
+| 3 | C |
+| 4 | L |
+| 5+ | N per depth |
+
+## Scalability
+
+Adjacency list (`parent_id`) + indexed columns must support unlimited tree depth without schema redesign.

@@ -2,12 +2,14 @@
 
 namespace App\Filament\Pages;
 
+use App\Support\Dashboard\ModuleQuickLinks;
 use Filament\Pages\Dashboard as BaseDashboard;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Text;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\HtmlString;
 
 class Dashboard extends BaseDashboard
 {
@@ -27,12 +29,26 @@ class Dashboard extends BaseDashboard
 
     public function content(Schema $schema): Schema
     {
+        $brand = config('agricart.brand.name', 'Agricart ERP');
+        $moduleCount = count(ModuleQuickLinks::all());
+
         return $schema
             ->components([
-                Section::make('Overview')
-                    ->description('Dashboard overview')
+                Section::make('Welcome to ' . $brand)
+                    ->description('Your ERP home for operations, inventory, sales, and more.')
+                    ->icon(Heroicon::OutlinedHome)
                     ->schema([
-                        Text::make('Welcome to Agricart ERP. Use the sidebar to switch modules and the navigation bar above to browse sub-sections.'),
+                        Text::make('Phase 1 UI Foundation is complete. Use the quick links below to open any module, or browse from the sidebar. Business widgets and live data will be added in Phase 2.'),
+                    ]),
+                Section::make('Quick Links')
+                    ->description($moduleCount . ' modules ready for development')
+                    ->icon(Heroicon::OutlinedSquares2x2)
+                    ->schema([
+                        Text::make(
+                            fn (): HtmlString => new HtmlString(
+                                view('filament.pages.partials.dashboard-quick-links')->render(),
+                            ),
+                        ),
                     ]),
             ]);
     }

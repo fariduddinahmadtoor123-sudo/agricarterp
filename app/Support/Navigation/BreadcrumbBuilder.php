@@ -22,7 +22,6 @@ class BreadcrumbBuilder
         if ($this->moduleResolver->isProfilePage()) {
             return [
                 Dashboard::getUrl() => config('agricart.dashboard.label', 'Dashboard'),
-                $this->pageRegistry->submenuUrl('settings', 'overview') => config('agricart.modules.settings.label', 'Settings'),
                 'Profile',
             ];
         }

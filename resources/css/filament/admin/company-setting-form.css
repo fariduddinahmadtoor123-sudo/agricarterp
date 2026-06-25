@@ -1,0 +1,60 @@
+/*
+ * Settings — Company / Main Store form (Categories/Brands modal pattern).
+ */
+
+.agricart-company-setting-form {
+    --agricart-company-setting-preview-size: 160px;
+    --agricart-company-setting-field-gap: 0.375rem;
+}
+
+.agricart-company-setting-form .fi-sc {
+    gap: var(--agricart-company-setting-field-gap);
+}
+
+.agricart-company-setting-form .fi-section-content {
+    gap: var(--agricart-company-setting-field-gap);
+}
+
+.agricart-company-setting-form .fi-fo-field {
+    margin-bottom: 0;
+}
+
+.agricart-company-setting-form .agricart-company-setting-entry-row {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid rgb(229 231 235);
+    border-radius: 0.5rem;
+    background-color: rgb(249 250 251);
+}
+
+.agricart-company-setting-form .agricart-company-setting-entry-row > .fi-sc {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    gap: 0.75rem !important;
+    width: 100% !important;
+    min-width: 0;
+}
+
+.agricart-company-setting-form .agricart-company-setting-logo-upload {
+    flex: 0 0 var(--agricart-company-setting-preview-size);
+    width: var(--agricart-company-setting-preview-size);
+    max-width: var(--agricart-company-setting-preview-size);
+}
+
+.agricart-company-setting-table-logo {
+    object-fit: contain;
+    background: #fff;
+    border-radius: 0.25rem;
+}
+
+.agricart-company-setting-logo-preview img {
+    max-width: 10rem;
+    max-height: 6rem;
+    object-fit: contain;
+}
+
+.agricart-company-setting-logo-preview__placeholder {
+    font-size: 0.75rem;
+    color: rgb(107 114 128);
+}

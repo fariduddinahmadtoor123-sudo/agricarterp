@@ -76,12 +76,123 @@ html.fi body {
         display: none;
     }
 
+    .agricart-topbar-context {
+        display: block;
+    }
+
+    .agricart-global-search {
+        position: fixed;
+        inset: 0;
+        z-index: 59;
+        width: auto;
+        left: auto;
+        top: auto;
+        transform: none;
+        pointer-events: none;
+    }
+
+    .agricart-global-search__desktop {
+        display: none;
+    }
+
+    .fi-topbar-end > .agricart-global-search__mobile-trigger {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 2.75rem;
+        min-height: 2.75rem;
+        padding: 0.375rem;
+        border: 0;
+        border-radius: 0.5rem;
+        background: transparent;
+        color: rgb(75 85 99);
+        cursor: pointer;
+    }
+
+    .fi-topbar-end > .agricart-global-search__mobile-trigger:hover,
+    .fi-topbar-end > .agricart-global-search__mobile-trigger:focus-visible {
+        background-color: rgb(131 183 53 / 0.08);
+        color: var(--agricart-primary);
+    }
+
+    .agricart-global-search__modal {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        pointer-events: auto;
+    }
+
+    .agricart-global-search__modal-backdrop {
+        position: absolute;
+        inset: 0;
+        background-color: rgb(0 0 0 / 0.45);
+    }
+
+    .agricart-global-search__modal-panel {
+        position: relative;
+        z-index: 1;
+        margin: max(4rem, env(safe-area-inset-top)) 0.75rem 0;
+        padding: 1rem;
+        border-radius: 0.75rem;
+        background-color: #ffffff;
+    }
+
+    .agricart-global-search__modal-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .agricart-global-search__label--modal {
+        flex: 1;
+    }
+
+    .agricart-global-search__close {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 2.25rem;
+        min-height: 2.25rem;
+        border: 0;
+        border-radius: 0.375rem;
+        background: transparent;
+        color: rgb(107 114 128);
+        cursor: pointer;
+    }
+
     .agricart-module-nav__module {
         display: none;
     }
 
     .agricart-module-nav__inner {
         min-height: 2.5rem;
+    }
+
+    .agricart-topbar-quick-actions__label {
+        display: none;
+    }
+
+    .agricart-topbar-quick-actions__btn {
+        min-width: 2.75rem;
+        padding: 0.375rem;
+    }
+}
+
+/* Tablet: show module label in submenu bar */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .agricart-module-nav__module {
+        display: block;
+        flex-shrink: 0;
+        padding-inline-end: 0.75rem;
+        border-inline-end: 1px solid rgb(229 231 235);
+        border-bottom: none;
+    }
+
+    .agricart-module-nav__inner {
+        flex-direction: row;
+        align-items: center;
     }
 }
 

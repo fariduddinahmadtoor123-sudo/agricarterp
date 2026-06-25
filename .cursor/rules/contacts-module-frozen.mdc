@@ -1,0 +1,71 @@
+---
+description: Contacts module (Supplier + Customer) is frozen after Phase 1 delivery
+globs:
+  - app/Filament/Contacts/**
+  - app/Filament/Pages/Contacts/**
+  - app/Models/Supplier*.php
+  - app/Models/Customer*.php
+  - app/Models/ContactMobileNumber.php
+  - app/Services/Contacts/**
+  - app/Support/Contacts/**
+  - config/contacts.php
+  - database/migrations/*supplier*
+  - database/migrations/*customer*
+  - database/migrations/*contact_mobile*
+  - resources/css/filament/admin/contacts-*.css
+  - tests/**/*Supplier*
+  - tests/**/*Customer*
+  - tests/**/*Contact*
+---
+
+# Contacts Module — FROZEN
+
+**Frozen:** 2026-06-23 (develop branch)
+
+The Contacts module (Suppliers + Customers) is approved for freeze. Do not modify Contacts-related code without explicit user approval.
+
+## Scope
+
+### Supplier
+- CRUD, status (active/inactive), soft delete, restore
+- Required bank accounts (at least one non-empty row)
+- Profile photo, card front/back document uploads with storage cleanup
+- Mobile registry and `SUP-` code sequencing
+- Compact single-row list toolbar (search, inline filters, More Filters dropdown, Add on right)
+
+### Customer
+- CRUD, soft delete, restore
+- Optional bank accounts
+- Profile photo document upload with storage cleanup
+- Mobile registry and `CUS-` code sequencing
+- Same list toolbar UX pattern as Supplier
+
+### Shared
+- Mobile uniqueness per `contactable_type` (same mobile allowed on 1 supplier + 1 customer)
+- Role-based permissions via `users.role` (`super_admin` | `staff`)
+- `ContactMobileNumber` morph registry
+
+## Permissions
+
+| Action | Staff | Super Admin |
+|--------|-------|-------------|
+| View / Create / Edit | Yes | Yes |
+| Delete / Restore | No | Yes |
+| Supplier inactive | No | Yes |
+
+## Operational queries for future modules
+
+```php
+Supplier::operational()->orderBy('business_name');
+Customer::query()->orderBy('customer_name'); // excludes soft-deleted by default
+```
+
+## Out of scope (deferred)
+
+- Full Roles & Permissions module
+- Ledger account auto-link on create
+- Product Catalog (next module)
+
+## Supersedes
+
+Replaces the earlier Supplier-only freeze rule. Both modules ship together.

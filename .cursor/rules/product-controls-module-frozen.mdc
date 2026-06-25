@@ -1,0 +1,70 @@
+---
+description: Product Controls module (Controls + Control Groups) is frozen after approved delivery
+globs:
+  - app/Filament/Pages/ProductCatalog/Controls.php
+  - app/Filament/ProductCatalog/Schemas/ProductControl*.php
+  - app/Filament/ProductCatalog/Support/ProductControl*.php
+  - app/Models/ControlGroupNumberSequence.php
+  - app/Models/ControlNumberSequence.php
+  - app/Models/ProductControl.php
+  - app/Models/ProductControlGroup.php
+  - app/Rules/UniqueProductControl*.php
+  - app/Services/ProductCatalog/ProductControl*.php
+  - app/Support/ProductCatalog/ProductControlAuthorization.php
+  - database/migrations/2026_06_30_*
+  - resources/css/filament/admin/product-control-form.css
+  - resources/views/filament/product-catalog/controls-tabs.blade.php
+  - tests/Feature/ProductControl*
+---
+
+# Product Controls Module — FROZEN
+
+**Frozen:** 2026-06-21 (category-module-freeze branch)
+
+The Product Controls module is approved for freeze. Do not modify Product Controls-related code without explicit user approval.
+
+## Scope
+
+### Product Controls
+- Reusable single-line business controls (`CTL-` numbering)
+- Fields: control number, name, control type, status
+- Modal CRUD, archive/restore (super_admin only)
+- No descriptions, SEO, AI, or content management
+
+### Control Groups
+- Policy bundles (`CTG-` numbering)
+- Fields: group number, name, assigned controls (min 1 active), controls_count, status
+- Controls | Groups tabs on existing Product Catalog → Controls page only
+
+## Official control types (7)
+
+1. Warranty
+2. Guarantee
+3. Return Policy
+4. Replacement Policy
+5. Handling Alert
+6. Usage Note
+7. Warning
+
+Do not add control types without explicit approval. Specific business rules belong in the control name text.
+
+## Data policy
+
+- **No standard controls seeder** — business lines are created manually
+- Control groups are built from manually created controls
+- Immutable numbers: `control_number`, `group_number`
+
+## Permissions
+
+| Action | Staff | Super Admin |
+|--------|-------|-------------|
+| View / Create / Edit | Yes | Yes |
+| Archive / Restore | No | Yes |
+
+## Future products integration (deferred)
+
+Products will later support individual controls, control groups, or both. Do not implement product pivots without explicit approval.
+
+## Config keys (frozen)
+
+`config/product-catalog.php`: `control_statuses`, `control_group_statuses`, `control_types`
