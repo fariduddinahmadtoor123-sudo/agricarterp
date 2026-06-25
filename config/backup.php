@@ -55,4 +55,13 @@ return [
         'public_root' => storage_path('app/public'),
     ],
 
+    'restore' => [
+        'import_directories' => [
+            'backups/uploads',
+            'backups/archives',
+        ],
+        'max_upload_size_kb' => (int) env('BACKUP_RESTORE_MAX_UPLOAD_KB', 1048576),
+        'queue_timeout' => (int) env('BACKUP_RESTORE_TIMEOUT', 7200),
+    ],
+
 ];
