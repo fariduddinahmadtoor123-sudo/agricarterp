@@ -12,13 +12,15 @@ class RestoreBackupJob implements ShouldQueue
 {
     use Queueable;
 
-    public int $timeout = 3600;
+    public int $timeout;
 
     public function __construct(
         public int $restoreRunId,
         public ?int $backupId = null,
         public ?string $uploadedArchivePath = null,
-    ) {}
+    ) {
+        $this->timeout = (int) config('backup.restore.queue_timeout', 7200);
+    }
 
     public function handle(RestoreOrchestrator $orchestrator): void
     {

@@ -9,6 +9,7 @@ use App\Models\BackupSchedule;
 use App\Models\RestoreRun;
 use App\Services\Backup\BackupDispatchService;
 use App\Services\Backup\BackupFileNameGenerator;
+use App\Services\Backup\BackupRestoreArchiveResolver;
 use App\Services\Backup\BackupScheduleService;
 use App\Services\Backup\Storage\GoogleDriveBackupStorage;
 use App\Services\Backup\Storage\LocalBackupStorage;
@@ -21,6 +22,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\EmbeddedTable;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Width;
@@ -219,53 +221,96 @@ class SystemBackups extends Page implements HasTable
 
     protected function getRestoreUploadAction(): Action
     {
+        $maxUploadKb = (int) config('backup.restore.max_upload_size_kb', 1048576);
+        $maxUploadLabel = $this->formatBytes($maxUploadKb * 1024);
+
         return Action::make('restoreUpload')
             ->label('Restore from ZIP')
             ->icon(Heroicon::OutlinedArrowUpTray)
             ->color('danger')
             ->modalHeading('Restore from Backup ZIP')
-            ->modalDescription('This replaces current database and uploaded files after validation. A pre-restore snapshot is created for rollback if restore fails.')
+            ->modalDescription('For large production backups (1 GB+), upload the ZIP to storage/app/private/backups/uploads/ via FTP or File Manager, then choose Server archive. Browser upload is for smaller archives only.')
             ->modalWidth(Width::Large)
             ->modalSubmitActionLabel('Start Restore')
             ->schema([
+                Select::make('restore_source')
+                    ->label('Restore source')
+                    ->options([
+                        'server' => 'Server archive (recommended for large backups)',
+                        'upload' => 'Browser upload (up to ' . $maxUploadLabel . ')',
+                    ])
+                    ->default('server')
+                    ->native(false)
+                    ->live()
+                    ->required(),
+                Select::make('server_archive')
+                    ->label('Server archive')
+                    ->options(fn (): array => app(BackupRestoreArchiveResolver::class)->options())
+                    ->searchable()
+                    ->visible(fn (Get $get): bool => ($get('restore_source') ?? 'server') === 'server')
+                    ->required(fn (Get $get): bool => ($get('restore_source') ?? 'server') === 'server')
+                    ->helperText('Allowed folders: backups/uploads and backups/archives under storage/app/private/. Refresh this page after copying a file.'),
                 FileUpload::make('archive')
                     ->label('Backup ZIP')
                     ->disk(config('backup.local_disk', 'local'))
                     ->directory(trim(config('backup.upload_directory', 'backups/uploads'), '/'))
-                    ->acceptedFileTypes(['application/zip', 'application/x-zip-compressed'])
-                    ->required(),
+                    ->acceptedFileTypes(['application/zip', 'application/x-zip-compressed', 'application/octet-stream'])
+                    ->maxSize($maxUploadKb)
+                    ->visible(fn (Get $get): bool => $get('restore_source') === 'upload')
+                    ->required(fn (Get $get): bool => $get('restore_source') === 'upload')
+                    ->helperText('Requires PHP upload_max_filesize and post_max_size to be at least ' . $maxUploadLabel . ' on this server.'),
             ])
             ->action(function (array $data): void {
-                $path = is_array($data['archive'] ?? null)
-                    ? ($data['archive'][0] ?? null)
-                    : ($data['archive'] ?? null);
+                $source = $data['restore_source'] ?? 'server';
+                $resolver = app(BackupRestoreArchiveResolver::class);
 
-                if (blank($path)) {
+                try {
+                    $absolute = $source === 'server'
+                        ? $resolver->absolutePath((string) ($data['server_archive'] ?? ''))
+                        : $this->resolveUploadedRestoreArchivePath($data['archive'] ?? null, $resolver);
+                } catch (\Throwable $exception) {
                     Notification::make()
                         ->danger()
-                        ->title('Upload a backup ZIP file first.')
+                        ->title('Could not use the selected backup archive')
+                        ->body($exception->getMessage())
                         ->send();
 
                     return;
                 }
 
-                $absolute = Storage::disk(config('backup.local_disk', 'local'))->path($path);
-
-                $restoreRun = RestoreRun::query()->create([
-                    'uuid' => (string) Str::uuid(),
-                    'mode' => RestoreRun::MODE_REPLACE,
-                    'status' => RestoreRun::STATUS_PENDING,
-                    'created_by_user_id' => auth()->id(),
-                ]);
-
-                app(BackupDispatchService::class)->dispatchRestore($restoreRun, uploadedArchivePath: $absolute);
-
-                Notification::make()
-                    ->warning()
-                    ->title('Restore started')
-                    ->body('Validation, snapshot, and full restore are running in the background queue.')
-                    ->send();
+                $this->dispatchRestoreFromArchive($absolute);
             });
+    }
+
+    protected function resolveUploadedRestoreArchivePath(mixed $archive, BackupRestoreArchiveResolver $resolver): string
+    {
+        $path = is_array($archive)
+            ? ($archive[0] ?? null)
+            : $archive;
+
+        if (blank($path)) {
+            throw new \RuntimeException('Upload a backup ZIP file first.');
+        }
+
+        return $resolver->absolutePath((string) $path);
+    }
+
+    protected function dispatchRestoreFromArchive(string $absoluteArchivePath): void
+    {
+        $restoreRun = RestoreRun::query()->create([
+            'uuid' => (string) Str::uuid(),
+            'mode' => RestoreRun::MODE_REPLACE,
+            'status' => RestoreRun::STATUS_PENDING,
+            'created_by_user_id' => auth()->id(),
+        ]);
+
+        app(BackupDispatchService::class)->dispatchRestore($restoreRun, uploadedArchivePath: $absoluteArchivePath);
+
+        Notification::make()
+            ->warning()
+            ->title('Restore started')
+            ->body('Validation, snapshot, and full restore are running in the background queue.')
+            ->send();
     }
 
     protected function getManageSchedulesAction(): Action
