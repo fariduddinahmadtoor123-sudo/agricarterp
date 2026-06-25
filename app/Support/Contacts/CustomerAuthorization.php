@@ -2,44 +2,32 @@
 
 namespace App\Support\Contacts;
 
-use App\Models\User;
+use App\Support\Authorization\PermissionChecker;
 
 class CustomerAuthorization
 {
-    public static function user(): ?User
-    {
-        $user = auth()->user();
-
-        return $user instanceof User ? $user : null;
-    }
-
-    public static function isSuperAdmin(): bool
-    {
-        return static::user()?->isSuperAdmin() ?? false;
-    }
-
     public static function canView(): bool
     {
-        return static::user() !== null;
+        return PermissionChecker::can('contacts', 'view');
     }
 
     public static function canCreate(): bool
     {
-        return static::canView();
+        return PermissionChecker::can('contacts', 'create');
     }
 
     public static function canEdit(): bool
     {
-        return static::canView();
+        return PermissionChecker::can('contacts', 'edit');
     }
 
     public static function canDelete(): bool
     {
-        return static::isSuperAdmin();
+        return PermissionChecker::can('contacts', 'delete');
     }
 
     public static function canRestore(): bool
     {
-        return static::isSuperAdmin();
+        return PermissionChecker::can('contacts', 'restore');
     }
 }

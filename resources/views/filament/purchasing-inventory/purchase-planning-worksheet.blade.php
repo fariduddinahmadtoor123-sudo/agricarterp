@@ -1,6 +1,6 @@
 <div class="agricart-pp-worksheet">
     {{-- Sheet header --}}
-    <div class="agricart-pp-worksheet__header">
+    <div class="agricart-pp-worksheet__header agricart-pp-screen-only">
         <div class="agricart-pp-worksheet__header-left">
             <a href="{{ \App\Filament\Pages\PurchasingInventory\PurchasePlanning::getUrl() }}" class="agricart-pp-worksheet__back">
                 {{ \Filament\Support\generate_icon_html(\Filament\Support\Icons\Heroicon::OutlinedArrowLeft, size: \Filament\Support\Enums\IconSize::Small) }}
@@ -48,6 +48,7 @@
             <span class="agricart-pp-worksheet__item-count">
                 {{ $itemCount }} {{ $itemCount === 1 ? 'Item' : 'Items' }}
             </span>
+            <button type="button" class="agricart-pp-worksheet__btn" onclick="window.print()">Print</button>
             <button
                 type="button"
                 class="agricart-pp-worksheet__btn agricart-pp-worksheet__btn--discard"
@@ -62,8 +63,19 @@
         </div>
     </div>
 
+    <div class="agricart-pp-print-header agricart-pp-print-only">
+        <h2>Purchase Planning — {{ filled($sheetNumber) ? $sheetNumber : 'Draft' }}</h2>
+        <p>
+            {{ filled($sheetTitle) ? $sheetTitle : 'Planning Sheet' }}
+            · {{ $sheetDate }}
+        </p>
+        @if (filled($notes))
+            <p>{{ $notes }}</p>
+        @endif
+    </div>
+
     {{-- Load toolbar --}}
-    <div class="agricart-pp-worksheet__toolbar">
+    <div class="agricart-pp-worksheet__toolbar agricart-pp-screen-only">
         <div class="agricart-pp-worksheet__toolbar-row agricart-pp-worksheet__toolbar-row--category">
             <span class="agricart-pp-worksheet__load-label">LOAD</span>
 
@@ -155,7 +167,7 @@
     {{-- Product grid --}}
     <div class="agricart-pp-worksheet__grid-wrap">
         {{-- Search bar sits outside horizontal scroll so the dropdown is not clipped --}}
-        <div class="agricart-pp-worksheet__search-bar">
+        <div class="agricart-pp-worksheet__search-bar agricart-pp-screen-only">
             <span class="agricart-pp-worksheet__search-bar-plus">+</span>
             <div class="agricart-pp-inline-search agricart-pp-inline-search--product">
                 <input

@@ -31,7 +31,8 @@ class PurchasePlanningPageTest extends TestCase
         $this->get('/admin/purchasing-inventory/purchase-planning/' . $sheet['id'])
             ->assertOk()
             ->assertSee('Barcode, SKU, English or Urdu name')
-            ->assertSee('Save Sheet');
+            ->assertSee('Save Sheet')
+            ->assertSee('Print');
     }
 
     public function test_worksheet_page_returns_404_for_missing_sheet(): void

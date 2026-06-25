@@ -40,6 +40,11 @@ class Users extends Page implements HasTable
         return 'users';
     }
 
+    public static function canAccess(): bool
+    {
+        return UserAuthorization::canView();
+    }
+
     public function content(Schema $schema): Schema
     {
         return $schema->components([

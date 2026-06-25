@@ -5,6 +5,7 @@ namespace App\Filament\Pages\PurchasingInventory;
 use App\Filament\Pages\Concerns\InteractsWithModuleSubmenuPage;
 use App\Filament\PurchasingInventory\Support\PurchasePlanningTableConfiguration;
 use App\Support\PurchasingInventory\PurchasePlanningSheetRepository;
+use App\Support\PurchasingInventory\PurchasingInventoryAuthorization;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -141,6 +142,7 @@ class PurchasePlanning extends Page implements HasTable
             ->label('Open Sheet')
             ->icon(Heroicon::OutlinedFolderOpen)
             ->color('gray')
+            ->visible(fn (): bool => PurchasingInventoryAuthorization::canView())
             ->modalHeading('Open Planning Sheet')
             ->modalDescription('Enter the full sheet number, for example PP-20260623-ABCD.')
             ->modalWidth(Width::Large)
@@ -174,6 +176,7 @@ class PurchasePlanning extends Page implements HasTable
         return Action::make('createPlanningSheet')
             ->label('New Planning Sheet')
             ->icon(Heroicon::OutlinedPlus)
+            ->visible(fn (): bool => PurchasingInventoryAuthorization::canCreate())
             ->action(function (): void {
                 $sheet = app(PurchasePlanningSheetRepository::class)->create();
 
@@ -186,6 +189,7 @@ class PurchasePlanning extends Page implements HasTable
         return Action::make('openPlanningSheet')
             ->label('Open')
             ->icon(Heroicon::OutlinedArrowTopRightOnSquare)
+            ->visible(fn (): bool => PurchasingInventoryAuthorization::canView())
             ->url(fn (array $record): string => PurchasePlanningWorksheet::getUrl(['sheetId' => $record['id']]));
     }
 
@@ -195,6 +199,7 @@ class PurchasePlanning extends Page implements HasTable
             ->label('Delete')
             ->icon(Heroicon::OutlinedTrash)
             ->color('danger')
+            ->visible(fn (): bool => PurchasingInventoryAuthorization::canDelete())
             ->requiresConfirmation()
             ->modalHeading('Delete Planning Sheet')
             ->modalDescription('This preview sheet will be removed from session storage.')

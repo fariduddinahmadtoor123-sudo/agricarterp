@@ -637,13 +637,6 @@ class ProductForm
 
     protected static function lastAiErrorForProduct(Product $product): ?string
     {
-        $log = AiEnrichmentLog::query()
-            ->where('subject_type', Product::class)
-            ->where('subject_id', $product->id)
-            ->where('status', AiEnrichmentLog::STATUS_FAILED)
-            ->latest('id')
-            ->first();
-
-        return $log?->message;
+        return AiEnrichmentLog::latestFailureSummaryFor(Product::class, $product->id);
     }
 }

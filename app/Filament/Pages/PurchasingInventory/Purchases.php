@@ -6,6 +6,7 @@ use App\Filament\Pages\Concerns\InteractsWithModuleSubmenuPage;
 use App\Filament\PurchasingInventory\Support\PurchaseTableConfiguration;
 use App\Services\PurchasingInventory\PurchaseLineBuilder;
 use App\Support\PurchasingInventory\PurchaseSheetRepository;
+use App\Support\PurchasingInventory\PurchasingInventoryAuthorization;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -170,6 +171,7 @@ class Purchases extends Page implements HasTable
             ->label('Open Invoice')
             ->icon(Heroicon::OutlinedFolderOpen)
             ->color('gray')
+            ->visible(fn (): bool => PurchasingInventoryAuthorization::canView())
             ->modalHeading('Open Purchase Invoice')
             ->modalDescription('Enter the full invoice number, for example PU-20260623-ABCD.')
             ->modalWidth(Width::Large)
@@ -202,6 +204,7 @@ class Purchases extends Page implements HasTable
         return Action::make('createPurchase')
             ->label('New Purchase')
             ->icon(Heroicon::OutlinedPlus)
+            ->visible(fn (): bool => PurchasingInventoryAuthorization::canCreate())
             ->action(function (): void {
                 $sheet = app(PurchaseSheetRepository::class)->create();
 
@@ -214,6 +217,7 @@ class Purchases extends Page implements HasTable
         return Action::make('openPurchase')
             ->label('Open')
             ->icon(Heroicon::OutlinedArrowTopRightOnSquare)
+            ->visible(fn (): bool => PurchasingInventoryAuthorization::canView())
             ->url(fn (array $record): string => PurchaseWorksheet::getUrl(['purchaseId' => $record['id']]));
     }
 
@@ -223,6 +227,7 @@ class Purchases extends Page implements HasTable
             ->label('Delete')
             ->icon(Heroicon::OutlinedTrash)
             ->color('danger')
+            ->visible(fn (): bool => PurchasingInventoryAuthorization::canDelete())
             ->requiresConfirmation()
             ->modalHeading('Delete Purchase Invoice')
             ->modalDescription('This preview invoice will be removed from session storage.')

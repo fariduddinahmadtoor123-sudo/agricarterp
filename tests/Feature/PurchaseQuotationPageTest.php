@@ -34,6 +34,7 @@ class PurchaseQuotationPageTest extends TestCase
             ->assertOk()
             ->assertSee('Barcode, SKU, English or Urdu name')
             ->assertSee('Save Quotation')
+            ->assertSee('Print')
             ->assertSee('Select supplier');
     }
 

@@ -3,6 +3,8 @@
 namespace App\Services\Settings;
 
 use App\Models\PurchasePricingSetting;
+use App\Support\Authorization\PermissionChecker;
+use App\Support\Settings\PurchasePricingSettingAuthorization;
 use Illuminate\Support\Facades\DB;
 
 class PurchasePricingSettingPersistenceService
@@ -16,6 +18,8 @@ class PurchasePricingSettingPersistenceService
      */
     public function create(array $data): PurchasePricingSetting
     {
+        PermissionChecker::authorizeAbility(fn (): bool => PurchasePricingSettingAuthorization::canCreate());
+
         $data = $this->prepareData($data);
 
         $this->dataValidator->validate($data);
@@ -30,6 +34,8 @@ class PurchasePricingSettingPersistenceService
      */
     public function update(PurchasePricingSetting $setting, array $data): PurchasePricingSetting
     {
+        PermissionChecker::authorizeAbility(fn (): bool => PurchasePricingSettingAuthorization::canEdit());
+
         $data = $this->prepareData($data);
 
         $this->dataValidator->validate($data, $setting);

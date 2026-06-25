@@ -4,6 +4,7 @@ namespace App\Support\PurchasingInventory;
 
 use App\Models\PurchasingInventory\ReorderOrder;
 use App\Services\PurchasingInventory\DocumentNumberService;
+use App\Support\Authorization\PermissionChecker;
 
 class ReOrderQueueRepository
 {
@@ -61,6 +62,8 @@ class ReOrderQueueRepository
         array $lines,
         ?int $purchaserId = null,
     ): array {
+        PermissionChecker::authorize('purchasing-inventory', 'create');
+
         $now = now();
 
         $order = ReorderOrder::query()->create([

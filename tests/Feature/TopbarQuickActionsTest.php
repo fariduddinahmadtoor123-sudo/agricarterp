@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Http\Controllers\Admin\QuickPurchaseController;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -11,12 +10,15 @@ class TopbarQuickActionsTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_quick_purchase_redirects_to_worksheet(): void
+    public function test_topbar_does_not_include_global_print_shortcut(): void
     {
-        $user = User::factory()->superAdmin()->create(['user_number' => 'USR-000001']);
+        $user = User::factory()->superAdmin()->create();
 
         $this->actingAs($user)
-            ->get(action(QuickPurchaseController::class))
-            ->assertRedirect();
+            ->get('/admin')
+            ->assertOk()
+            ->assertDontSee('title="Barcode / price tag printing"', false)
+            ->assertSee('title="New purchase invoice"', false)
+            ->assertSee('title="New sale (POS)"', false);
     }
 }

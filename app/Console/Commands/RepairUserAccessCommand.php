@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use Database\Seeders\RolePermissionSeeder;
+use App\Services\Users\UserAccessRepairService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -21,7 +21,7 @@ class RepairUserAccessCommand extends Command
             return self::FAILURE;
         }
 
-        $this->call('db:seed', ['--class' => RolePermissionSeeder::class]);
+        app(UserAccessRepairService::class)->repair();
 
         $superAdminId = DB::table('roles')->where('slug', 'super_admin')->value('id');
         $email = (string) $this->argument('email');
@@ -33,13 +33,13 @@ class RepairUserAccessCommand extends Command
                 'status' => 'active',
             ]);
 
-        if ($updated === 0) {
+        if ($updated === 0 && ! DB::table('users')->where('email', $email)->exists()) {
             $this->warn("No user found for {$email}.");
 
             return self::FAILURE;
         }
 
-        $this->info("Super Admin role assigned to {$email}.");
+        $this->info("Super Admin access ensured for {$email}.");
 
         return self::SUCCESS;
     }

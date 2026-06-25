@@ -3,6 +3,8 @@
 namespace App\Services\Settings;
 
 use App\Models\PrintingSetting;
+use App\Support\Authorization\PermissionChecker;
+use App\Support\Settings\PrintingSettingAuthorization;
 use Illuminate\Support\Facades\DB;
 
 class PrintingSettingPersistenceService
@@ -16,6 +18,8 @@ class PrintingSettingPersistenceService
      */
     public function create(array $data): PrintingSetting
     {
+        PermissionChecker::authorizeAbility(fn (): bool => PrintingSettingAuthorization::canCreate());
+
         $data = $this->prepareData($data);
         $this->dataValidator->validate($data);
 
@@ -29,6 +33,8 @@ class PrintingSettingPersistenceService
      */
     public function update(PrintingSetting $setting, array $data): PrintingSetting
     {
+        PermissionChecker::authorizeAbility(fn (): bool => PrintingSettingAuthorization::canEdit());
+
         $data = $this->prepareData($data);
         $this->dataValidator->validate($data, $setting);
 

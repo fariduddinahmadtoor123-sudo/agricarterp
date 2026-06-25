@@ -5,6 +5,7 @@ namespace App\Services\Backup;
 use App\Models\Backup;
 use App\Models\RestoreRun;
 use App\Services\Backup\Storage\LocalBackupStorage;
+use App\Services\Users\UserAccessRepairService;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use RuntimeException;
@@ -77,6 +78,9 @@ class RestoreOrchestrator
             $this->restoreStorageFromExtract($extractDirectory);
 
             Artisan::call('up');
+
+            app(UserAccessRepairService::class)->repair();
+            $logger->info('access', 'User roles and permissions repaired after restore.');
 
             $restoreRun->update([
                 'status' => RestoreRun::STATUS_COMPLETED,

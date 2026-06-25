@@ -39,6 +39,17 @@ class CompanySettingPersistenceTest extends TestCase
         ]));
     }
 
+    public function test_rejects_invalid_email_addresses(): void
+    {
+        $this->expectException(ValidationException::class);
+
+        app(CompanySettingPersistenceService::class)->create($this->payload([
+            'emails' => [
+                ['email' => 'not-an-email'],
+            ],
+        ]));
+    }
+
     public function test_updates_existing_company_setting(): void
     {
         $setting = app(CompanySettingPersistenceService::class)->create($this->payload());
@@ -52,6 +63,30 @@ class CompanySettingPersistenceTest extends TestCase
 
         $this->assertSame('Updated Name', $updated->name_en);
         $this->assertSame(['info@example.com'], $updated->emails);
+    }
+
+    public function test_normalizes_website_url_without_protocol(): void
+    {
+        $setting = app(CompanySettingPersistenceService::class)->create($this->payload([
+            'website_url' => 'www.toorstore.pk',
+        ]));
+
+        $this->assertSame('https://www.toorstore.pk', $setting->website_url);
+
+        $updated = app(CompanySettingPersistenceService::class)->update($setting, $this->payload([
+            'website_url' => 'toorstore.pk',
+        ]));
+
+        $this->assertSame('https://toorstore.pk', $updated->website_url);
+    }
+
+    public function test_normalizes_website_url_when_full_https_url_pasted(): void
+    {
+        $setting = app(CompanySettingPersistenceService::class)->create($this->payload([
+            'website_url' => 'https://toorstore.pk',
+        ]));
+
+        $this->assertSame('https://toorstore.pk', $setting->website_url);
     }
 
     public function test_migrates_legacy_phone_strings_on_update(): void

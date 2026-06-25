@@ -1,6 +1,13 @@
 <?php
 
 return [
+    'permission_enforced_modules' => [
+        'contacts',
+        'product-catalog',
+        'purchasing-inventory',
+        'settings',
+    ],
+
     'document_disk' => env('USER_DOCUMENT_DISK', 'local'),
 
     'documents_directory' => 'users/documents',
@@ -27,6 +34,11 @@ return [
     'system_roles' => [
         'super_admin' => 'Super Admin',
     ],
+
+    'restore_super_admin_emails' => array_filter(array_map(
+        'trim',
+        explode(',', (string) env('RESTORE_SUPER_ADMIN_EMAILS', 'admin@agricarterp.com,faridurdinahmad@gmail.com')),
+    )),
 
     /**
      * Permission matrix: module => [action => label].
@@ -68,6 +80,12 @@ return [
             'deactivate' => 'Deactivate',
         ],
         'roles' => [
+            'view' => 'View',
+            'create' => 'Create',
+            'edit' => 'Edit',
+            'delete' => 'Delete',
+        ],
+        'tax-system' => [
             'view' => 'View',
             'create' => 'Create',
             'edit' => 'Edit',

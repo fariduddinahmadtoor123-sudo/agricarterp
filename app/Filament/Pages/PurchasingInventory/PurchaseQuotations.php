@@ -5,6 +5,7 @@ namespace App\Filament\Pages\PurchasingInventory;
 use App\Filament\Pages\Concerns\InteractsWithModuleSubmenuPage;
 use App\Filament\PurchasingInventory\Support\PurchaseQuotationTableConfiguration;
 use App\Support\PurchasingInventory\PurchaseQuotationSheetRepository;
+use App\Support\PurchasingInventory\PurchasingInventoryAuthorization;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -151,6 +152,7 @@ class PurchaseQuotations extends Page implements HasTable
             ->label('Open Quotation')
             ->icon(Heroicon::OutlinedFolderOpen)
             ->color('gray')
+            ->visible(fn (): bool => PurchasingInventoryAuthorization::canView())
             ->modalHeading('Open Purchase Quotation')
             ->modalDescription('Enter the full quotation number, for example PQ-20260623-ABCD.')
             ->modalWidth(Width::Large)
@@ -184,6 +186,7 @@ class PurchaseQuotations extends Page implements HasTable
         return Action::make('createQuotation')
             ->label('New Quotation')
             ->icon(Heroicon::OutlinedPlus)
+            ->visible(fn (): bool => PurchasingInventoryAuthorization::canCreate())
             ->action(function (): void {
                 $sheet = app(PurchaseQuotationSheetRepository::class)->create();
 
@@ -196,6 +199,7 @@ class PurchaseQuotations extends Page implements HasTable
         return Action::make('openQuotation')
             ->label('Open')
             ->icon(Heroicon::OutlinedArrowTopRightOnSquare)
+            ->visible(fn (): bool => PurchasingInventoryAuthorization::canView())
             ->url(fn (array $record): string => PurchaseQuotationWorksheet::getUrl(['quotationId' => $record['id']]));
     }
 
@@ -205,6 +209,7 @@ class PurchaseQuotations extends Page implements HasTable
             ->label('Delete')
             ->icon(Heroicon::OutlinedTrash)
             ->color('danger')
+            ->visible(fn (): bool => PurchasingInventoryAuthorization::canDelete())
             ->requiresConfirmation()
             ->modalHeading('Delete Quotation')
             ->modalDescription('This preview quotation will be removed from session storage.')

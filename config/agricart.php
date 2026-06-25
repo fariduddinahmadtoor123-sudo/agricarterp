@@ -451,6 +451,7 @@ return [
             'submenus' => [
                 'overview' => 'Overview',
                 'general-settings' => 'Store Setting',
+                'tax-system' => 'Tax System',
                 'purchase-pricing' => 'Purchase Pricing',
                 'ai-configuration' => 'AI Settings',
                 'ai-enrichment-logs' => 'AI Logs',
@@ -463,6 +464,7 @@ return [
             'submenu_icons' => [
                 'overview' => \Filament\Support\Icons\Heroicon::OutlinedSquares2x2,
                 'general-settings' => \Filament\Support\Icons\Heroicon::OutlinedCog6Tooth,
+                'tax-system' => \Filament\Support\Icons\Heroicon::OutlinedReceiptPercent,
                 'purchase-pricing' => \Filament\Support\Icons\Heroicon::OutlinedCurrencyDollar,
                 'ai-configuration' => \Filament\Support\Icons\Heroicon::OutlinedSparkles,
                 'ai-enrichment-logs' => \Filament\Support\Icons\Heroicon::OutlinedExclamationTriangle,
@@ -475,6 +477,7 @@ return [
             'pages' => [
                 'overview' => \App\Filament\Pages\Settings\Overview::class,
                 'general-settings' => \App\Filament\Pages\Settings\GeneralSettings::class,
+                'tax-system' => \App\Filament\Pages\Settings\TaxSystem::class,
                 'purchase-pricing' => \App\Filament\Pages\Settings\PurchasePricing::class,
                 'ai-configuration' => \App\Filament\Pages\Settings\AiConfiguration::class,
                 'ai-enrichment-logs' => \App\Filament\Pages\Settings\AiEnrichmentLogs::class,

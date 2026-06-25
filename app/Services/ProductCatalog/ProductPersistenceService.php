@@ -5,6 +5,7 @@ namespace App\Services\ProductCatalog;
 use App\Models\Product;
 use App\Models\ProductAttributeValue;
 use App\Models\ProductImage;
+use App\Support\Authorization\PermissionChecker;
 use App\Support\ProductCatalog\ProductAuthorization;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -27,6 +28,8 @@ class ProductPersistenceService
      */
     public function create(array $data): Product
     {
+        PermissionChecker::authorizeAbility(fn (): bool => ProductAuthorization::canCreate());
+
         $data = $this->prepareData($data);
 
         $this->dataValidator->validate($data);
@@ -66,6 +69,8 @@ class ProductPersistenceService
      */
     public function update(Product $product, array $data): Product
     {
+        PermissionChecker::authorizeAbility(fn (): bool => ProductAuthorization::canEdit());
+
         if ($product->isArchived()) {
             abort(404);
         }

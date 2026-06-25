@@ -135,7 +135,7 @@ class CatalogEnrichmentService
         } catch (\Throwable $exception) {
             $model->forceFill(['ai_status' => $this->failedStatus($model)])->save();
 
-            $this->enrichmentLogger->logFailure($model, $modelName, $exception->getMessage(), $logContext);
+            $this->enrichmentLogger->logFailureFromException($model, $modelName, $exception, $logContext);
 
             Log::error('Catalog AI enrichment failed.', [
                 ...$logContext,

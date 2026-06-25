@@ -17,7 +17,8 @@ class RolePermissionSeeder extends Seeder
         $superAdminId = $this->ensureSuperAdminRole();
         $this->syncPermissions($superAdminId);
         $this->ensureSequences();
-        $this->repairSuperAdminUsers($superAdminId);
+        app(\App\Services\Users\UserAccessRepairService::class)
+            ->repairUsersWithoutRoles($superAdminId);
     }
 
     protected function ensureSuperAdminRole(): int
@@ -92,18 +93,4 @@ class RolePermissionSeeder extends Seeder
         }
     }
 
-    protected function repairSuperAdminUsers(int $superAdminId): void
-    {
-        if (! Schema::hasColumn('users', 'role_id')) {
-            return;
-        }
-
-        DB::table('users')
-            ->whereNull('role_id')
-            ->where('email', 'admin@agricarterp.com')
-            ->update([
-                'role_id' => $superAdminId,
-                'status' => 'active',
-            ]);
-    }
 }

@@ -16,6 +16,30 @@ class PurchasePricingSettingResolver
         return PurchasePricingSetting::query()->first();
     }
 
+    public function shouldUpdateProductPricesFromPurchases(): bool
+    {
+        return (bool) ($this->settings()?->update_product_prices_from_purchases
+            ?? config('settings.purchase_pricing.update_product_prices_from_purchases', false));
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function priceCodeWording(): array
+    {
+        $wording = $this->settings()?->price_code_wording
+            ?? config('settings.purchase_pricing.default_price_code_wording', []);
+
+        $normalized = [];
+
+        foreach (range(0, 9) as $digit) {
+            $key = (string) $digit;
+            $normalized[$key] = (string) ($wording[$key] ?? $wording[$digit] ?? $key);
+        }
+
+        return $normalized;
+    }
+
     /**
      * @return array{wholesale: string, super_wholesale: string, distributor: string}
      */

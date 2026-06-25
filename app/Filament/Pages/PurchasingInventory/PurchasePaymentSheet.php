@@ -6,6 +6,7 @@ use App\Filament\Pages\Concerns\InteractsWithModuleSubmenuPage;
 use App\Filament\PurchasingInventory\Support\PurchasePaymentSheetTableConfiguration;
 use App\Services\PurchasingInventory\PurchasePaymentSheetBuilder;
 use App\Support\PurchasingInventory\PurchasePaymentSheetRepository;
+use App\Support\PurchasingInventory\PurchasingInventoryAuthorization;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -167,6 +168,7 @@ class PurchasePaymentSheet extends Page implements HasTable
             ->label('Open Sheet')
             ->icon(Heroicon::OutlinedFolderOpen)
             ->color('gray')
+            ->visible(fn (): bool => PurchasingInventoryAuthorization::canView())
             ->modalHeading('Open Purchase Payment Sheet')
             ->modalDescription('Enter the full sheet number, for example PPS-20260621-ABCD.')
             ->modalWidth(Width::Large)
@@ -200,6 +202,7 @@ class PurchasePaymentSheet extends Page implements HasTable
         return Action::make('createSheet')
             ->label('New Payment Sheet')
             ->icon(Heroicon::OutlinedPlus)
+            ->visible(fn (): bool => PurchasingInventoryAuthorization::canCreate())
             ->action(function (): void {
                 $sheet = app(PurchasePaymentSheetRepository::class)->create();
 
@@ -212,6 +215,7 @@ class PurchasePaymentSheet extends Page implements HasTable
         return Action::make('openSheet')
             ->label('Open')
             ->icon(Heroicon::OutlinedArrowTopRightOnSquare)
+            ->visible(fn (): bool => PurchasingInventoryAuthorization::canView())
             ->url(fn (array $record): string => PurchasePaymentSheetWorksheet::getUrl(['sheetId' => $record['id']]));
     }
 
@@ -221,6 +225,7 @@ class PurchasePaymentSheet extends Page implements HasTable
             ->label('Delete')
             ->icon(Heroicon::OutlinedTrash)
             ->color('danger')
+            ->visible(fn (): bool => PurchasingInventoryAuthorization::canDelete())
             ->requiresConfirmation()
             ->modalHeading('Delete Payment Sheet')
             ->modalDescription('This preview sheet will be removed from session storage.')

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\PurchasePricingSetting;
 use App\Filament\Pages\PurchasingInventory\PriceTags;
 use App\Models\User;
 use App\Services\PurchasingInventory\PriceTagImportService;
@@ -101,7 +102,7 @@ class PriceTagsPageTest extends TestCase
             ],
         ]);
 
-        $this->assertSame('1500', $data['sale_price']);
+        $this->assertSame('TXSS', $data['sale_price']);
         $this->assertSame('TTT', $data['purchase_code']);
         $this->assertTrue($data['show_barcode']);
         $this->assertFalse($data['show_qr']);
