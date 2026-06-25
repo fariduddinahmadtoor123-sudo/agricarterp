@@ -203,7 +203,9 @@ class CategoryPersistenceService
     {
         $attributes = [
             'name_en' => $data['name_en'],
-            'name_ur' => filled($data['name_ur'] ?? null) ? $data['name_ur'] : '',
+            'name_ur' => array_key_exists('name_ur', $data)
+                ? (filled($data['name_ur'] ?? null) ? $data['name_ur'] : '')
+                : ($category?->name_ur ?? ''),
             'slug' => filled($data['slug'] ?? null) ? $data['slug'] : null,
             'description_en' => $data['description_en'] ?? null,
             'description_ur' => $data['description_ur'] ?? null,

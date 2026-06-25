@@ -189,9 +189,14 @@ class ProductPersistenceService
             'packing_unit_id' => (int) $data['packing_unit_id'],
             'packing_value' => $data['packing_value'],
             'name_en' => $data['name_en'],
-            'name_ur' => filled($data['name_ur'] ?? null) ? $data['name_ur'] : '',
+            'name_ur' => array_key_exists('name_ur', $data)
+                ? (filled($data['name_ur'] ?? null) ? $data['name_ur'] : '')
+                : ($product?->name_ur ?? ''),
             'required_quantity' => $data['required_quantity'] ?? 0,
             'alert_quantity' => $data['alert_quantity'] ?? 0,
+            'wholesale_from_qty' => $data['wholesale_from_qty'] ?? 0,
+            'super_wholesale_from_qty' => $data['super_wholesale_from_qty'] ?? 0,
+            'distributor_from_qty' => $data['distributor_from_qty'] ?? 0,
             'short_description_en' => $data['short_description_en'] ?? null,
             'short_description_ur' => $data['short_description_ur'] ?? null,
             'description_en' => $data['description_en'] ?? null,

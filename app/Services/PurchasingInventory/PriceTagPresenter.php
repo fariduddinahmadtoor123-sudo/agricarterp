@@ -2,10 +2,13 @@
 
 namespace App\Services\PurchasingInventory;
 
+use App\Services\Settings\PrintingSettingResolver;
+
 class PriceTagPresenter
 {
     public function __construct(
         protected PriceTagBarcodeGenerator $barcodeGenerator,
+        protected PrintingSettingResolver $printingResolver,
     ) {}
 
     /**
@@ -22,6 +25,10 @@ class PriceTagPresenter
         $showBarcode = in_array($scanMode, ['barcode', 'both'], true) && $scanMode !== 'none';
 
         $saleDigits = $this->saleDigits((string) ($line['sale_rate'] ?? ''));
+
+        $label = is_array($settings['label'] ?? null)
+            ? $settings['label']
+            : $this->printingResolver->priceTagLabel();
 
         return [
             'store_name' => ($fields['store_name'] ?? false) ? $storeName : '',
@@ -44,8 +51,9 @@ class PriceTagPresenter
             'show_barcode' => $showBarcode,
             'show_qr' => in_array($scanMode, ['qr', 'both'], true),
             'compact_name' => $this->compactName($line, $fields),
-            'label_width_mm' => (float) config('purchasing-inventory.price_tag_label.width_mm', 38),
-            'label_height_mm' => (float) config('purchasing-inventory.price_tag_label.height_mm', 25),
+            'label_width_mm' => (float) ($label['width_mm'] ?? 38),
+            'label_height_mm' => (float) ($label['height_mm'] ?? 25),
+            'label_gap_mm' => (float) ($label['gap_mm'] ?? 3),
         ];
     }
 

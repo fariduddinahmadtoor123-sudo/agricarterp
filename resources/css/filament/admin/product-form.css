@@ -46,6 +46,30 @@
     background-color: rgb(249 250 251);
 }
 
+.agricart-product-block--core > .fi-sc {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+.agricart-product-core-qty-row > .fi-sc {
+    gap: 0.25rem !important;
+}
+
+@media (min-width: 1280px) {
+    .agricart-product-core-qty-row .fi-fo-field-wrp-label span,
+    .agricart-product-core-qty-row .fi-fo-field-label {
+        font-size: 0.6875rem;
+        line-height: 1.2;
+        white-space: nowrap;
+    }
+
+    .agricart-product-core-qty-row .fi-input-wrp,
+    .agricart-product-core-qty-row .fi-select-input {
+        min-width: 0;
+    }
+}
+
 .agricart-product-block--intro > .fi-sc {
     gap: 0;
 }

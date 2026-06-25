@@ -229,6 +229,39 @@ class ProductPersistenceTest extends TestCase
         app(ProductPersistenceService::class)->archive($product);
     }
 
+    public function test_saves_quantity_pricing_thresholds(): void
+    {
+        $product = app(ProductPersistenceService::class)->create($this->productPayload([
+            'wholesale_from_qty' => 10,
+            'super_wholesale_from_qty' => 50,
+            'distributor_from_qty' => 100,
+        ]));
+
+        $this->assertSame('10.0000', (string) $product->wholesale_from_qty);
+        $this->assertSame('50.0000', (string) $product->super_wholesale_from_qty);
+        $this->assertSame('100.0000', (string) $product->distributor_from_qty);
+    }
+
+    public function test_rejects_invalid_quantity_pricing_chain(): void
+    {
+        $this->expectException(ValidationException::class);
+
+        app(ProductPersistenceService::class)->create($this->productPayload([
+            'wholesale_from_qty' => 50,
+            'super_wholesale_from_qty' => 10,
+            'distributor_from_qty' => 100,
+        ]));
+    }
+
+    public function test_defaults_quantity_pricing_thresholds_to_zero(): void
+    {
+        $product = app(ProductPersistenceService::class)->create($this->productPayload());
+
+        $this->assertSame('0.0000', (string) $product->wholesale_from_qty);
+        $this->assertSame('0.0000', (string) $product->super_wholesale_from_qty);
+        $this->assertSame('0.0000', (string) $product->distributor_from_qty);
+    }
+
     /**
      * @param  array<string, mixed>  $overrides
      * @return array<string, mixed>

@@ -117,6 +117,36 @@
                     @endforeach
                 </div>
             </div>
+
+            <div class="agricart-pt-label-size">
+                <span class="agricart-pt-options__label">Sticker size (barcode printer)</span>
+                <div class="agricart-pp-worksheet__lang-group agricart-pt-label-size__presets">
+                    @foreach ($labelPresetOptions as $key => $label)
+                        <button
+                            type="button"
+                            @class(['agricart-pp-worksheet__lang-btn', 'agricart-pp-worksheet__lang-btn--active' => $labelPreset === $key])
+                            wire:click="setLabelPreset('{{ $key }}')"
+                        >{{ $label }}</button>
+                    @endforeach
+                </div>
+                <div class="agricart-pt-label-size__custom">
+                    <label>
+                        <span>W (mm)</span>
+                        <input type="number" step="0.1" min="10" max="200" wire:model.blur="labelWidthMm" />
+                    </label>
+                    <label>
+                        <span>H (mm)</span>
+                        <input type="number" step="0.1" min="10" max="200" wire:model.blur="labelHeightMm" />
+                    </label>
+                    <label>
+                        <span>Gap</span>
+                        <input type="number" step="0.1" min="0" max="20" wire:model.blur="labelGapMm" />
+                    </label>
+                </div>
+                @if (filled($barcodePrinterNote ?? null))
+                    <p class="agricart-pt-label-size__note">{{ $barcodePrinterNote }}</p>
+                @endif
+            </div>
         </div>
     </section>
 
@@ -178,7 +208,10 @@
         </table>
     </section>
 
-    <div class="agricart-pt-print">
+    <div
+        class="agricart-pt-print"
+        style="--agricart-pt-print-gap: {{ $labelGapMm }}mm; --agricart-pt-print-page: {{ $printSheetCssPage }};"
+    >
         @foreach ($queueLines as $line)
             @if (! ($line['disabled'] ?? false))
                 @for ($copy = 0; $copy < (int) ($line['print_qty'] ?? 1); $copy++)
@@ -189,4 +222,17 @@
             @endif
         @endforeach
     </div>
+
+    <style>
+        @media print {
+            @page {
+                size: var(--agricart-pt-print-page, A4 portrait);
+                margin: 8mm;
+            }
+
+            .agricart-pt-print {
+                gap: var(--agricart-pt-print-gap, 3mm) !important;
+            }
+        }
+    </style>
 </div>

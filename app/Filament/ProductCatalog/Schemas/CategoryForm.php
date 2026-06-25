@@ -2,6 +2,7 @@
 
 namespace App\Filament\ProductCatalog\Schemas;
 
+use App\Models\AiEnrichmentLog;
 use App\Models\Category;
 use App\Rules\UniqueCategoryEnglishName;
 use App\Services\ProductCatalog\CategoryHierarchyService;
@@ -174,6 +175,13 @@ class CategoryForm
                             ->label('AI Status')
                             ->disabled()
                             ->dehydrated(false),
+
+                        TextInput::make('ai_last_error_display')
+                            ->label('Last AI Error')
+                            ->disabled()
+                            ->dehydrated(false)
+                            ->visible(fn (callable $get): bool => filled($get('ai_last_error_display')))
+                            ->columnSpanFull(),
 
                         TextInput::make('ai_generated_at_display')
                             ->label('AI Generated At')
@@ -374,6 +382,7 @@ class CategoryForm
             'level_display' => (string) $category->level,
             'products_count_display' => (string) $category->products_count,
             'ai_status_display' => config('product-catalog.category_ai_statuses')[$category->ai_status] ?? ucfirst($category->ai_status),
+            'ai_last_error_display' => static::lastAiErrorForCategory($category),
             'ai_generated_at_display' => $category->ai_generated_at?->toDateTimeString(),
             'ai_version_display' => $category->ai_version,
         ];
@@ -392,6 +401,7 @@ class CategoryForm
             $state['level_display'],
             $state['products_count_display'],
             $state['ai_status_display'],
+            $state['ai_last_error_display'],
             $state['ai_generated_at_display'],
             $state['ai_version_display'],
         );
@@ -575,5 +585,17 @@ class CategoryForm
         }
 
         return implode(' → ', $segments);
+    }
+
+    protected static function lastAiErrorForCategory(Category $category): ?string
+    {
+        $log = AiEnrichmentLog::query()
+            ->where('subject_type', Category::class)
+            ->where('subject_id', $category->id)
+            ->where('status', AiEnrichmentLog::STATUS_FAILED)
+            ->latest('id')
+            ->first();
+
+        return $log?->message;
     }
 }

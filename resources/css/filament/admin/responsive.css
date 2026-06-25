@@ -169,6 +169,15 @@ html.fi body {
     .agricart-module-nav__inner {
         min-height: 2.5rem;
     }
+
+    .agricart-topbar-quick-actions__label {
+        display: none;
+    }
+
+    .agricart-topbar-quick-actions__btn {
+        min-width: 2.75rem;
+        padding: 0.375rem;
+    }
 }
 
 /* Tablet: show module label in submenu bar */

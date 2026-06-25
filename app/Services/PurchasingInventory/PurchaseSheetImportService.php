@@ -72,7 +72,7 @@ class PurchaseSheetImportService
             $purchaseRow['purchase_rate'] = (string) ($row['purchase_price'] ?? '');
             $purchaseRow['landing_cost'] = (string) ($row['landing_cost'] ?? '');
             $purchaseRow['sale_rate'] = (string) ($row['sale_price'] ?? '');
-            $purchaseRow = PurchaseLineBuilder::applyTierRates($purchaseRow);
+            $purchaseRow = PurchaseLineBuilder::applyTierRates($purchaseRow, syncMarkupsFromSettings: true);
 
             $rows[] = $purchaseRow;
         }
@@ -118,7 +118,7 @@ class PurchaseSheetImportService
             $purchaseRow['purchase_qty'] = PurchaseLineBuilder::formatQuantity($row['required_qty'] ?? '');
             $purchaseRow['previous_rate'] = (string) ($row['unit_price'] ?? '');
             $purchaseRow['purchase_rate'] = (string) ($row['unit_price'] ?? '');
-            $purchaseRow = PurchaseLineBuilder::applyTierRates($purchaseRow);
+            $purchaseRow = PurchaseLineBuilder::applyTierRates($purchaseRow, syncMarkupsFromSettings: true);
 
             $rows[] = $purchaseRow;
         }

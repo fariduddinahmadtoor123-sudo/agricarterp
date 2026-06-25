@@ -17,3 +17,6 @@ Route::get('/', [CategoryCatalogController::class, 'index'])
 Route::get('/catalog/{categoryId}', [CategoryCatalogController::class, 'show'])
     ->whereNumber('categoryId')
     ->name('catalog.show');
+
+Route::view('/register', 'register')
+    ->name('staff.register');

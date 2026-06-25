@@ -147,7 +147,7 @@ class ProductControlPersistenceTest extends TestCase
 
     public function test_staff_cannot_archive(): void
     {
-        $this->actingAs(User::factory()->create(['role' => 'staff']));
+        $this->actingAs(User::factory()->staff()->create());
 
         $control = app(ProductControlPersistenceService::class)->create([
             'name' => 'Keep dry',

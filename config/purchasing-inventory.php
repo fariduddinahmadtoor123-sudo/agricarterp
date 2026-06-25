@@ -38,13 +38,6 @@ return [
         'return' => 'Invoice Return',
     ],
 
-    /** Default tier mark-up % on purchase rate (landing excluded). */
-    'purchase_pricing_tiers' => [
-        'wholesale' => ['label' => 'Wholesale', 'default_pct' => '10'],
-        'super_wholesale' => ['label' => 'Super Wholesale', 'default_pct' => '8'],
-        'distributor' => ['label' => 'Distributor', 'default_pct' => '12'],
-    ],
-
     /** Hide store selector and use demo_default_store when true. */
     'single_store_mode' => true,
 

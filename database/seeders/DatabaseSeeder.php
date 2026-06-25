@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\UserNumberSequence;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,11 +16,25 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $this->call([
+            StandardUnitsSeeder::class,
+            StandardAttributesSeeder::class,
+            StandardProductControlsSeeder::class,
+            CompanySettingSeeder::class,
+            PurchasePricingSettingSeeder::class,
+            RolePermissionSeeder::class,
+            PrintingSettingSeeder::class,
         ]);
+
+        User::factory()->superAdmin()->create([
+            'name' => 'Admin',
+            'email' => 'admin@agricarterp.com',
+            'user_number' => 'USR-000001',
+        ]);
+
+        UserNumberSequence::query()->updateOrCreate(
+            ['id' => 1],
+            ['last_number' => 1],
+        );
     }
 }

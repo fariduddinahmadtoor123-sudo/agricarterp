@@ -5,6 +5,7 @@ namespace App\Filament\Pages\ProductCatalog;
 use App\Filament\Pages\Concerns\InteractsWithModuleSubmenuPage;
 use App\Filament\ProductCatalog\Schemas\CategoryForm;
 use App\Filament\ProductCatalog\Support\CategoryTableConfiguration;
+use App\Filament\ProductCatalog\Support\RunCatalogAiEnrichmentAction;
 use App\Models\Category;
 use App\Services\ProductCatalog\CategoryHierarchyService;
 use App\Services\ProductCatalog\CategoryPersistenceService;
@@ -59,11 +60,12 @@ class Categories extends Page implements HasTable
                 ->deferLoading()
                 ->modelLabel('Category')
                 ->pluralModelLabel('Categories')
-                ->headerActions(
-                    CategoryAuthorization::canCreate()
+                ->headerActions([
+                    ...RunCatalogAiEnrichmentAction::headerActionsFor('categories'),
+                    ...(CategoryAuthorization::canCreate()
                         ? [$this->getCreateCategoryAction()]
-                        : [],
-                )
+                        : []),
+                ])
                 ->columns([
                     TextColumn::make('category_number')
                         ->label('Category Number')

@@ -4,6 +4,7 @@ namespace App\Filament\ProductCatalog\Schemas;
 
 use App\Models\Attribute;
 use App\Models\Category;
+use App\Models\AiEnrichmentLog;
 use App\Models\Product;
 use App\Rules\UniqueProductEnglishNamePerBrand;
 use App\Services\ProductCatalog\CategoryImageStorage;
@@ -53,6 +54,7 @@ class ProductForm
                                     ->placeholder('Search categories...')
                                     ->required()
                                     ->searchable()
+                                    ->searchLabels(false)
                                     ->native(false)
                                     ->live()
                                     ->options(fn (): array => $categories->activeLeafCategoryOptions())
@@ -161,75 +163,102 @@ class ProductForm
 
                 Group::make()
                     ->schema([
-                        TextInput::make('name_en')
-                            ->label('English Name')
-                            ->placeholder('Auto from image filename')
-                            ->required()
-                            ->maxLength(500)
-                            ->live(onBlur: true)
-                            ->rules($readOnly ? [] : fn ($get) => [
-                                new UniqueProductEnglishNamePerBrand($get('brand_id'), $record),
-                            ]),
+                        Group::make()
+                            ->schema([
+                                TextInput::make('name_en')
+                                    ->label('English Name')
+                                    ->placeholder('Auto from image filename')
+                                    ->required()
+                                    ->maxLength(500)
+                                    ->live(onBlur: true)
+                                    ->rules($readOnly ? [] : fn ($get) => [
+                                        new UniqueProductEnglishNamePerBrand($get('brand_id'), $record),
+                                    ]),
 
-                        Select::make('brand_id')
-                            ->label('Brand')
-                            ->placeholder('Brand')
-                            ->required()
-                            ->searchable()
-                            ->native(false)
-                            ->live()
-                            ->options(fn (): array => $masters->activeBrandOptions())
-                            ->getSearchResultsUsing(fn (string $search): array => $masters->searchActiveBrands($search))
-                            ->getOptionLabelUsing(fn ($value): ?string => $masters->brandLabel($value)),
+                                Select::make('brand_id')
+                                    ->label('Brand')
+                                    ->placeholder('Brand')
+                                    ->required()
+                                    ->searchable()
+                                    ->native(false)
+                                    ->live()
+                                    ->options(fn (): array => $masters->activeBrandOptions())
+                                    ->getSearchResultsUsing(fn (string $search): array => $masters->searchActiveBrands($search))
+                                    ->getOptionLabelUsing(fn ($value): ?string => $masters->brandLabel($value)),
 
-                        TextInput::make('name_ur')
-                            ->label('Urdu Name')
-                            ->placeholder('AI later')
-                            ->disabled()
-                            ->dehydrated(false),
+                                TextInput::make('name_ur')
+                                    ->label('Urdu Name')
+                                    ->placeholder('Filled by AI enrichment')
+                                    ->maxLength(500)
+                                    ->disabled($readOnly)
+                                    ->dehydrated(! $readOnly),
 
-                        Select::make('base_unit_id')
-                            ->label('Base Unit')
-                            ->placeholder('Base unit')
-                            ->required()
-                            ->searchable()
-                            ->native(false)
-                            ->live()
-                            ->options(fn (): array => $masters->activeUnitOptions())
-                            ->getSearchResultsUsing(fn (string $search): array => $masters->searchActiveUnits($search))
-                            ->getOptionLabelUsing(fn ($value): ?string => $masters->unitLabel($value)),
+                                Select::make('base_unit_id')
+                                    ->label('Base Unit')
+                                    ->placeholder('Base unit')
+                                    ->required()
+                                    ->searchable()
+                                    ->native(false)
+                                    ->live()
+                                    ->options(fn (): array => $masters->activeUnitOptions())
+                                    ->getSearchResultsUsing(fn (string $search): array => $masters->searchActiveUnits($search))
+                                    ->getOptionLabelUsing(fn ($value): ?string => $masters->unitLabel($value)),
+                            ])
+                            ->columns(['default' => 1, 'sm' => 2, 'lg' => 4]),
 
-                        TextInput::make('packing_value')
-                            ->label('Pack Qty')
-                            ->numeric()
-                            ->required()
-                            ->minValue(0.0001)
-                            ->live(onBlur: true),
+                        Group::make()
+                            ->schema([
+                                TextInput::make('packing_value')
+                                    ->label('Pack Qty')
+                                    ->numeric()
+                                    ->required()
+                                    ->minValue(0.0001)
+                                    ->live(onBlur: true),
 
-                        Select::make('packing_unit_id')
-                            ->label('Pack Unit')
-                            ->placeholder('Pack unit')
-                            ->required()
-                            ->searchable()
-                            ->native(false)
-                            ->live()
-                            ->options(fn (): array => $masters->activeUnitOptions())
-                            ->getSearchResultsUsing(fn (string $search): array => $masters->searchActiveUnits($search))
-                            ->getOptionLabelUsing(fn ($value): ?string => $masters->unitLabel($value)),
+                                Select::make('packing_unit_id')
+                                    ->label('Pack Unit')
+                                    ->placeholder('Pack unit')
+                                    ->required()
+                                    ->searchable()
+                                    ->native(false)
+                                    ->live()
+                                    ->options(fn (): array => $masters->activeUnitOptions())
+                                    ->getSearchResultsUsing(fn (string $search): array => $masters->searchActiveUnits($search))
+                                    ->getOptionLabelUsing(fn ($value): ?string => $masters->unitLabel($value)),
 
-                        TextInput::make('required_quantity')
-                            ->label('Required Qty')
-                            ->numeric()
-                            ->default(0)
-                            ->minValue(0),
+                                TextInput::make('required_quantity')
+                                    ->label('Required Qty')
+                                    ->numeric()
+                                    ->default(0)
+                                    ->minValue(0),
 
-                        TextInput::make('alert_quantity')
-                            ->label('Alert Qty')
-                            ->numeric()
-                            ->default(0)
-                            ->minValue(0),
+                                TextInput::make('alert_quantity')
+                                    ->label('Alert Qty')
+                                    ->numeric()
+                                    ->default(0)
+                                    ->minValue(0),
+
+                                TextInput::make('wholesale_from_qty')
+                                    ->label('Wholesale Qty')
+                                    ->numeric()
+                                    ->default(0)
+                                    ->minValue(0),
+
+                                TextInput::make('super_wholesale_from_qty')
+                                    ->label('Super Wholesale Qty')
+                                    ->numeric()
+                                    ->default(0)
+                                    ->minValue(0),
+
+                                TextInput::make('distributor_from_qty')
+                                    ->label('Distributor Qty')
+                                    ->numeric()
+                                    ->default(0)
+                                    ->minValue(0),
+                            ])
+                            ->columns(['default' => 1, 'sm' => 2, 'md' => 4, 'xl' => 7])
+                            ->extraAttributes(['class' => 'agricart-product-core-qty-row']),
                     ])
-                    ->columns(['default' => 1, 'sm' => 2, 'lg' => 4])
                     ->extraAttributes(['class' => 'agricart-product-block agricart-product-block--core']),
 
                 Group::make()
@@ -239,6 +268,7 @@ class ProductForm
                             ->placeholder('Search display categories...')
                             ->multiple()
                             ->searchable()
+                            ->searchLabels(false)
                             ->native(false)
                             ->live()
                             ->options(fn ($get): array => $categories->activeDisplayCategoryOptions($get('category_id')))
@@ -398,6 +428,13 @@ class ProductForm
                             ->label('AI Status')
                             ->disabled()
                             ->dehydrated(false),
+
+                        TextInput::make('ai_last_error_display')
+                            ->label('Last AI Error')
+                            ->disabled()
+                            ->dehydrated(false)
+                            ->visible(fn (callable $get): bool => filled($get('ai_last_error_display')))
+                            ->columnSpanFull(),
                     ])
                     ->columns(['default' => 1, 'lg' => 2]),
             ]);
@@ -413,12 +450,16 @@ class ProductForm
             'main_image' => null,
             'additional_images' => [],
             'name_en' => null,
+            'name_ur' => '',
             'brand_id' => null,
             'base_unit_id' => null,
             'packing_value' => null,
             'packing_unit_id' => null,
             'required_quantity' => 0,
             'alert_quantity' => 0,
+            'wholesale_from_qty' => 0,
+            'super_wholesale_from_qty' => 0,
+            'distributor_from_qty' => 0,
             'display_category_ids' => [],
             'attribute_rows' => self::emptyAttributeRowState(),
             'control_group_ids' => [],
@@ -461,12 +502,16 @@ class ProductForm
                 ->map(fn ($image): array => ['image' => $image->image_path])
                 ->all(),
             'name_en' => $product->name_en,
+            'name_ur' => $product->name_ur,
             'brand_id' => $product->brand_id,
             'base_unit_id' => $product->base_unit_id,
             'packing_value' => $product->packing_value,
             'packing_unit_id' => $product->packing_unit_id,
             'required_quantity' => $product->required_quantity,
             'alert_quantity' => $product->alert_quantity,
+            'wholesale_from_qty' => $product->wholesale_from_qty,
+            'super_wholesale_from_qty' => $product->super_wholesale_from_qty,
+            'distributor_from_qty' => $product->distributor_from_qty,
             'display_category_ids' => $product->categoryTags->pluck('id')->all(),
             'attribute_rows' => self::attributeRowsFromModel($product),
             'control_group_ids' => $product->controlGroups->pluck('id')->all(),
@@ -484,6 +529,7 @@ class ProductForm
             'usage_ur' => $product->usage_ur,
             'product_number_display' => $product->product_number,
             'ai_status_display' => config('product-catalog.product_ai_statuses')[$product->ai_status] ?? ucfirst($product->ai_status),
+            'ai_last_error_display' => self::lastAiErrorForProduct($product),
         ];
     }
 
@@ -498,7 +544,7 @@ class ProductForm
             $state['category_gallery_display'],
             $state['product_number_display'],
             $state['ai_status_display'],
-            $state['name_ur'],
+            $state['ai_last_error_display'],
         );
 
         if (isset($state['attribute_rows']) && is_array($state['attribute_rows'])) {
@@ -587,5 +633,17 @@ class ProductForm
         }
 
         return $ancestors;
+    }
+
+    protected static function lastAiErrorForProduct(Product $product): ?string
+    {
+        $log = AiEnrichmentLog::query()
+            ->where('subject_type', Product::class)
+            ->where('subject_id', $product->id)
+            ->where('status', AiEnrichmentLog::STATUS_FAILED)
+            ->latest('id')
+            ->first();
+
+        return $log?->message;
     }
 }

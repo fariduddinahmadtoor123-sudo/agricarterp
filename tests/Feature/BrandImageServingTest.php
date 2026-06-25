@@ -19,7 +19,7 @@ class BrandImageServingTest extends TestCase
 
         Storage::disk('local')->put('brands/test.png', 'logo-bytes');
 
-        $user = User::factory()->create();
+        $user = User::factory()->superAdmin()->create();
 
         $response = $this->actingAs($user)->get('/admin/brand-images?path=brands/test.png');
 

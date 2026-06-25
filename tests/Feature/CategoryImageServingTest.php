@@ -19,7 +19,7 @@ class CategoryImageServingTest extends TestCase
 
         Storage::disk('local')->put('categories/test.jpg', 'image-bytes');
 
-        $user = User::factory()->create();
+        $user = User::factory()->superAdmin()->create();
 
         $response = $this->actingAs($user)->get('/admin/category-images?path=categories/test.jpg');
 

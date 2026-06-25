@@ -1,0 +1,17 @@
+/*
+ * Settings — Purchase Pricing form (Company Settings list/modal pattern).
+ */
+
+.agricart-purchase-pricing-setting-form .fi-section-content {
+    gap: 0.5rem;
+}
+
+.agricart-contacts-list-purchase-pricing-settings .fi-ta-actions {
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.agricart-contacts-list-purchase-pricing-settings .fi-ta-actions .fi-link {
+    display: inline-flex !important;
+    visibility: visible !important;
+}

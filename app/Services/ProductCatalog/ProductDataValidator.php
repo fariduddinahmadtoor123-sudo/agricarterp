@@ -36,6 +36,9 @@ class ProductDataValidator
             'name_ur' => ['nullable', 'string', 'max:500'],
             'required_quantity' => ['nullable', 'numeric', 'gte:0'],
             'alert_quantity' => ['nullable', 'numeric', 'gte:0'],
+            'wholesale_from_qty' => ['nullable', 'numeric', 'gte:0'],
+            'super_wholesale_from_qty' => ['nullable', 'numeric', 'gte:0', 'gte:wholesale_from_qty'],
+            'distributor_from_qty' => ['nullable', 'numeric', 'gte:0', 'gte:super_wholesale_from_qty'],
             'main_image' => [$product === null ? 'required' : 'nullable'],
             'display_category_ids' => ['nullable', 'array'],
             'display_category_ids.*' => ['integer', 'exists:categories,id'],
@@ -72,6 +75,9 @@ class ProductDataValidator
                     Product::AI_STATUS_FAILED,
                 ]),
             ],
+        ], [
+            'super_wholesale_from_qty.gte' => 'Super Wholesale Qty must be greater than or equal to Wholesale Qty.',
+            'distributor_from_qty.gte' => 'Distributor Qty must be greater than or equal to Super Wholesale Qty.',
         ]);
 
         if ($validator->fails()) {

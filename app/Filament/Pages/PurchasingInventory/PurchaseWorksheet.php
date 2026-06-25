@@ -6,6 +6,7 @@ use App\Filament\Pages\Concerns\InteractsWithModuleSubmenuPage;
 use App\Models\Supplier;
 use App\Services\PurchasingInventory\InventoryService;
 use App\Services\PurchasingInventory\PurchaseLineBuilder;
+use App\Services\Settings\PurchasePricingSettingResolver;
 use App\Services\PurchasingInventory\PurchasePlanningBulkLoad;
 use App\Services\PurchasingInventory\PurchasePlanningCategorySearch;
 use App\Services\PurchasingInventory\PurchasePlanningProductSearch;
@@ -158,7 +159,7 @@ class PurchaseWorksheet extends Page
                     'invoiceImageUrl' => filled($this->sheet['invoice_image_path'] ?? null)
                         ? Storage::disk('public')->url((string) $this->sheet['invoice_image_path'])
                         : null,
-                    'tierLabels' => config('purchasing-inventory.purchase_pricing_tiers', []),
+                    'tierLabels' => app(PurchasePricingSettingResolver::class)->tierLabels(),
                 ]),
         ]);
     }
@@ -413,14 +414,19 @@ class PurchaseWorksheet extends Page
         $this->persistSheet(false);
     }
 
-    public function recalculateRowTiers(int $index): void
+    public function recalculateRowTiers(int $index, bool $syncMarkupsFromSettings = false): void
     {
         if (! isset($this->rows[$index])) {
             return;
         }
 
-        $this->rows[$index] = PurchaseLineBuilder::applyTierRates($this->rows[$index]);
+        $this->rows[$index] = PurchaseLineBuilder::applyTierRates($this->rows[$index], $syncMarkupsFromSettings);
         $this->persistSheet(false);
+    }
+
+    public function recalculateRowTiersFromSettings(int $index): void
+    {
+        $this->recalculateRowTiers($index, true);
     }
 
     public function importPlanningSheet(): void

@@ -6,6 +6,7 @@ use App\Filament\Pages\Concerns\InteractsWithModuleSubmenuPage;
 use App\Services\PurchasingInventory\PriceTagImportService;
 use App\Services\PurchasingInventory\PriceTagPresenter;
 use App\Services\PurchasingInventory\PurchasePlanningProductSearch;
+use App\Services\Settings\PrintingSettingResolver;
 use App\Support\PurchasingInventory\PriceTagQueueRepository;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
@@ -35,6 +36,14 @@ class PriceTags extends Page
 
     /** @var array<string, bool> */
     public array $printFields = [];
+
+    public string $labelPreset = '38x25';
+
+    public string $labelWidthMm = '38';
+
+    public string $labelHeightMm = '25';
+
+    public string $labelGapMm = '3';
 
     public static function moduleKey(): string
     {
@@ -94,6 +103,13 @@ class PriceTags extends Page
             'printFieldLabels' => config('purchasing-inventory.price_tag_print_fields', []),
             'printFields' => $this->printFields,
             'scanMode' => $this->scanMode,
+            'labelPresetOptions' => app(PrintingSettingResolver::class)->labelPresetOptions(),
+            'labelPreset' => $this->labelPreset,
+            'labelWidthMm' => $this->labelWidthMm,
+            'labelHeightMm' => $this->labelHeightMm,
+            'labelGapMm' => $this->labelGapMm,
+            'printSheetCssPage' => app(PrintingSettingResolver::class)->priceTagSheetCssPage(),
+            'barcodePrinterNote' => app(PrintingSettingResolver::class)->priceTagLabel()['printer_note'],
             'purchaseInvoiceOptions' => app(PriceTagImportService::class)->purchaseInvoiceOptions(),
             'searchResults' => $this->searchResults,
         ];
@@ -296,6 +312,42 @@ class PriceTags extends Page
         $this->persistSettings();
     }
 
+    public function setLabelPreset(string $preset): void
+    {
+        if (! array_key_exists($preset, config('printing.label_presets', []))) {
+            return;
+        }
+
+        $this->labelPreset = $preset;
+
+        if ($preset !== 'custom') {
+            $config = config("printing.label_presets.{$preset}", []);
+            $this->labelWidthMm = (string) ($config['width_mm'] ?? 38);
+            $this->labelHeightMm = (string) ($config['height_mm'] ?? 25);
+            $this->labelGapMm = (string) ($config['gap_mm'] ?? 3);
+        }
+
+        $this->persistSettings();
+    }
+
+    public function updatedLabelWidthMm(): void
+    {
+        $this->labelPreset = 'custom';
+        $this->persistSettings();
+    }
+
+    public function updatedLabelHeightMm(): void
+    {
+        $this->labelPreset = 'custom';
+        $this->persistSettings();
+    }
+
+    public function updatedLabelGapMm(): void
+    {
+        $this->labelPreset = 'custom';
+        $this->persistSettings();
+    }
+
     public function togglePrintField(string $field): void
     {
         if (! array_key_exists($field, config('purchasing-inventory.price_tag_print_fields', []))) {
@@ -342,6 +394,12 @@ class PriceTags extends Page
         $this->queueLines = $repository->lines();
         $this->scanMode = (string) ($settings['scan_mode'] ?? 'barcode');
         $this->printFields = is_array($settings['fields'] ?? null) ? $settings['fields'] : [];
+
+        $label = is_array($settings['label'] ?? null) ? $settings['label'] : [];
+        $this->labelPreset = (string) ($label['preset'] ?? '38x25');
+        $this->labelWidthMm = (string) ($label['width_mm'] ?? 38);
+        $this->labelHeightMm = (string) ($label['height_mm'] ?? 25);
+        $this->labelGapMm = (string) ($label['gap_mm'] ?? 3);
     }
 
     protected function persistQueue(): void
@@ -363,6 +421,12 @@ class PriceTags extends Page
         return [
             'scan_mode' => $this->scanMode,
             'fields' => $this->printFields,
+            'label' => [
+                'preset' => $this->labelPreset,
+                'width_mm' => (float) $this->labelWidthMm,
+                'height_mm' => (float) $this->labelHeightMm,
+                'gap_mm' => (float) $this->labelGapMm,
+            ],
         ];
     }
 

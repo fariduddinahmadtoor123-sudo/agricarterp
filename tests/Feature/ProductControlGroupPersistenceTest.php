@@ -157,7 +157,7 @@ class ProductControlGroupPersistenceTest extends TestCase
 
     public function test_staff_cannot_archive_group(): void
     {
-        $this->actingAs(User::factory()->create(['role' => 'staff']));
+        $this->actingAs(User::factory()->staff()->create());
 
         $control = $this->createControl('Warning label', ProductControl::TYPE_WARNING);
 

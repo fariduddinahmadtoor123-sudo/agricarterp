@@ -1,25 +1,25 @@
 <?php
 
-namespace App\Filament\Pages\Settings;
+namespace App\Filament\Pages\OnlineStore;
 
 use App\Filament\Pages\Concerns\InteractsWithModuleSubmenuPage;
 use Filament\Pages\Page;
 
-class SalesChannels extends Page
+class StoreApi extends Page
 {
     use InteractsWithModuleSubmenuPage;
 
-    protected static ?string $slug = 'settings/sales-channels';
+    protected static ?string $slug = 'online-store/api';
 
     protected static bool $shouldRegisterNavigation = false;
 
     public static function moduleKey(): string
     {
-        return 'settings';
+        return 'online-store';
     }
 
     public static function submenuKey(): string
     {
-        return 'sales-channels';
+        return 'api';
     }
 }

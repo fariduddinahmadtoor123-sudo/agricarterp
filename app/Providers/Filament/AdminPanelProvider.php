@@ -5,10 +5,13 @@ namespace App\Providers\Filament;
 use App\AvatarProviders\AgricartAvatarProvider;
 use App\Filament\Pages\Auth\EditProfile;
 use App\Filament\Pages\Settings\Overview as SettingsOverview;
+use App\Http\Controllers\BackupDownloadController;
+use App\Http\Controllers\Admin\QuickPurchaseController;
 use App\Http\Controllers\ProductCatalog\BrandImageController;
 use App\Http\Controllers\ProductCatalog\CategoryImageController;
 use App\Http\Controllers\ProductCatalog\ProductImageController;
 use App\Http\Controllers\ProductCatalog\ProductLabelQrController;
+use App\Http\Controllers\Settings\CompanySettingLogoController;
 use App\Support\Navigation\MainMenu;
 use Filament\Enums\ThemeMode;
 use Filament\Enums\UserMenuPosition;
@@ -88,12 +91,16 @@ class AdminPanelProvider extends PanelProvider
                 fn (): string => view('filament.layout.partials.topbar-breadcrumbs')->render(),
             )
             ->renderHook(
-                PanelsRenderHook::GLOBAL_SEARCH_BEFORE,
-                fn (): string => view('filament.layout.partials.topbar-global-search-mobile')->render(),
+                PanelsRenderHook::GLOBAL_SEARCH_AFTER,
+                fn (): string => view('filament.layout.partials.topbar-quick-actions')->render(),
             )
             ->renderHook(
-                PanelsRenderHook::GLOBAL_SEARCH_AFTER,
+                PanelsRenderHook::USER_MENU_BEFORE,
                 fn (): string => view('filament.layout.partials.topbar-notifications')->render(),
+            )
+            ->renderHook(
+                PanelsRenderHook::GLOBAL_SEARCH_BEFORE,
+                fn (): string => view('filament.layout.partials.topbar-global-search-mobile')->render(),
             )
             ->renderHook(
                 PanelsRenderHook::TOPBAR_END,
@@ -129,6 +136,15 @@ class AdminPanelProvider extends PanelProvider
 
                 Route::get('product-label-qr', ProductLabelQrController::class)
                     ->name('product-catalog.product-label-qr');
+
+                Route::get('company-setting-logo', CompanySettingLogoController::class)
+                    ->name('settings.company-setting-logo');
+
+                Route::get('quick/purchase', QuickPurchaseController::class)
+                    ->name('quick.purchase');
+
+                Route::get('backups/{backup}/download', BackupDownloadController::class)
+                    ->name('backups.download');
             });
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Support\PurchasingInventory;
 
+use App\Services\Settings\PrintingSettingResolver;
+
 class PriceTagQueueRepository
 {
     public const SESSION_KEY_QUEUE = 'price_tag_queue';
@@ -36,9 +38,18 @@ class PriceTagQueueRepository
      */
     public function settings(): array
     {
+        $printing = app(PrintingSettingResolver::class)->priceTagLabel();
+
         $defaults = [
             'scan_mode' => (string) config('purchasing-inventory.price_tag_default_scan_mode', 'barcode'),
             'fields' => config('purchasing-inventory.price_tag_default_fields', []),
+            'label' => [
+                'preset' => $printing['preset'],
+                'width_mm' => $printing['width_mm'],
+                'height_mm' => $printing['height_mm'],
+                'gap_mm' => $printing['gap_mm'],
+                'sheet_paper' => $printing['sheet_paper'],
+            ],
         ];
 
         $stored = session(self::SESSION_KEY_SETTINGS, []);
@@ -47,9 +58,14 @@ class PriceTagQueueRepository
             return $defaults;
         }
 
+        $label = is_array($stored['label'] ?? null)
+            ? array_merge($defaults['label'], $stored['label'])
+            : $defaults['label'];
+
         return [
             'scan_mode' => (string) ($stored['scan_mode'] ?? $defaults['scan_mode']),
             'fields' => array_merge($defaults['fields'], is_array($stored['fields'] ?? null) ? $stored['fields'] : []),
+            'label' => $label,
         ];
     }
 

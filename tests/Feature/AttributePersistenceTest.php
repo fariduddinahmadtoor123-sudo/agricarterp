@@ -101,7 +101,7 @@ class AttributePersistenceTest extends TestCase
 
     public function test_staff_cannot_archive(): void
     {
-        $this->actingAs(User::factory()->create(['role' => 'staff']));
+        $this->actingAs(User::factory()->staff()->create());
 
         $attribute = app(AttributePersistenceService::class)->create(['name' => 'RPM']);
 

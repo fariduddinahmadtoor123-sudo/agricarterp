@@ -2,17 +2,22 @@
 
 namespace App\Services\PurchasingInventory;
 
+use App\Services\Settings\PurchasePricingSettingResolver;
 use Illuminate\Support\Str;
 
 class PurchaseLineBuilder
 {
+    public function __construct(
+        protected PurchasePricingSettingResolver $pricingSettings,
+    ) {}
+
     /**
      * @param  array<string, mixed>  $product
      * @return array<string, mixed>
      */
     public function fromProduct(array $product): array
     {
-        $tiers = config('purchasing-inventory.purchase_pricing_tiers', []);
+        $markups = $this->pricingSettings->markupPercentagesForRows();
 
         $row = [
             'line_id' => (string) Str::uuid(),
@@ -31,11 +36,11 @@ class PurchaseLineBuilder
             'purchase_rate' => '',
             'landing_cost' => '',
             'sale_rate' => '',
-            'wholesale_pct' => (string) ($tiers['wholesale']['default_pct'] ?? '5'),
+            'wholesale_pct' => $markups['wholesale'],
             'wholesale_rate' => '',
-            'super_wholesale_pct' => (string) ($tiers['super_wholesale']['default_pct'] ?? '8'),
+            'super_wholesale_pct' => $markups['super_wholesale'],
             'super_wholesale_rate' => '',
-            'distributor_pct' => (string) ($tiers['distributor']['default_pct'] ?? '12'),
+            'distributor_pct' => $markups['distributor'],
             'distributor_rate' => '',
         ];
 
@@ -46,8 +51,16 @@ class PurchaseLineBuilder
      * @param  array<string, mixed>  $row
      * @return array<string, mixed>
      */
-    public static function applyTierRates(array $row): array
+    public static function applyTierRates(array $row, bool $syncMarkupsFromSettings = false): array
     {
+        if ($syncMarkupsFromSettings) {
+            $markups = app(PurchasePricingSettingResolver::class)->markupPercentagesForRows();
+
+            foreach (['wholesale', 'super_wholesale', 'distributor'] as $tier) {
+                $row[$tier . '_pct'] = $markups[$tier];
+            }
+        }
+
         $purchaseRate = self::numeric($row['purchase_rate'] ?? '');
 
         if ($purchaseRate <= 0) {

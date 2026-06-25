@@ -4,6 +4,7 @@ namespace App\Support\PurchasingInventory;
 
 use App\Models\PurchasingInventory\PurchaseSheet;
 use App\Services\PurchasingInventory\DocumentNumberService;
+use App\Services\Settings\PrintingSettingResolver;
 use Illuminate\Support\Facades\DB;
 
 class PurchaseSheetRepository
@@ -86,7 +87,8 @@ class PurchaseSheetRepository
             'linked_quotation_number' => '',
             'payment_amount' => '',
             'payment_notes' => '',
-            'print_paper_size' => 'a4',
+            'print_paper_size' => (string) ($attributes['print_paper_size']
+                ?? app(PrintingSettingResolver::class)->purchaseSheetPaperKey()),
             'created_by' => auth()->id(),
         ]);
 

@@ -6,6 +6,7 @@ use App\Filament\Pages\Concerns\InteractsWithModuleSubmenuPage;
 use App\Filament\ProductCatalog\Schemas\ProductForm;
 use App\Filament\ProductCatalog\Support\ProductCatalogTableSearch;
 use App\Filament\ProductCatalog\Support\ProductTableConfiguration;
+use App\Filament\ProductCatalog\Support\RunCatalogAiEnrichmentAction;
 use App\Models\Product;
 use App\Services\ProductCatalog\ProductImageStorage;
 use App\Services\ProductCatalog\ProductPersistenceService;
@@ -66,11 +67,12 @@ class Products extends Page implements HasTable
                 ->deferLoading()
                 ->modelLabel('Product')
                 ->pluralModelLabel('Products')
-                ->headerActions(
-                    ProductAuthorization::canCreate()
+                ->headerActions([
+                    ...RunCatalogAiEnrichmentAction::headerActionsFor('products'),
+                    ...(ProductAuthorization::canCreate()
                         ? [$this->getCreateProductAction()]
-                        : [],
-                )
+                        : []),
+                ])
                 ->columns([
                     ImageColumn::make('main_image')
                         ->label('Image')
@@ -111,6 +113,18 @@ class Products extends Page implements HasTable
 
                             return trim($record->packing_value . ' ' . $base . ' / ' . $pack);
                         }),
+                    TextColumn::make('wholesale_from_qty')
+                        ->label('Wholesale Qty')
+                        ->toggleable(isToggledHiddenByDefault: true)
+                        ->formatStateUsing(fn (mixed $state): string => static::formatProductQty($state)),
+                    TextColumn::make('super_wholesale_from_qty')
+                        ->label('Super Wholesale Qty')
+                        ->toggleable(isToggledHiddenByDefault: true)
+                        ->formatStateUsing(fn (mixed $state): string => static::formatProductQty($state)),
+                    TextColumn::make('distributor_from_qty')
+                        ->label('Distributor Qty')
+                        ->toggleable(isToggledHiddenByDefault: true)
+                        ->formatStateUsing(fn (mixed $state): string => static::formatProductQty($state)),
                     TextColumn::make('display_category_tags')
                         ->label('Display Tags')
                         ->state(function (Product $record): string {
@@ -311,5 +325,24 @@ class Products extends Page implements HasTable
         }
 
         $this->unmountAction();
+    }
+
+    protected static function formatProductQty(mixed $state): string
+    {
+        if ($state === null || $state === '') {
+            return '0';
+        }
+
+        $number = (float) str_replace(',', '', (string) $state);
+
+        if ($number == 0.0) {
+            return '0';
+        }
+
+        if (abs($number - round($number)) < 0.00001) {
+            return (string) (int) round($number);
+        }
+
+        return rtrim(rtrim(number_format($number, 4, '.', ''), '0'), '.');
     }
 }

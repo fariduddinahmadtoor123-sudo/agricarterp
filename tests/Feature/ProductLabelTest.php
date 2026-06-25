@@ -13,7 +13,7 @@ class ProductLabelTest extends TestCase
 
     public function test_product_label_qr_route_returns_svg(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->superAdmin()->create();
 
         $this->actingAs($user)
             ->get('/admin/product-label-qr?code=PRD-000001')
