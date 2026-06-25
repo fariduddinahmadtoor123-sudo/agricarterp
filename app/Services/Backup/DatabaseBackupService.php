@@ -42,12 +42,6 @@ class DatabaseBackupService
     {
         File::ensureDirectoryExists($directory . '/database/tables');
 
-        if ($this->tryMysqldumpExport($directory)) {
-            $this->logger->info('database', 'Database exported using mysqldump.');
-
-            return;
-        }
-
         $tables = $this->tablesToBackup();
         $total = count($tables);
 
@@ -56,62 +50,9 @@ class DatabaseBackupService
             $onProgress?->invoke($table, $index + 1, $total);
         }
 
-        $this->logger->info('database', 'Database exported using chunked PHP exporter.', [
+        $this->logger->info('database', 'Database exported using PHP exporter.', [
             'table_count' => $total,
         ]);
-    }
-
-    protected function tryMysqldumpExport(string $directory): bool
-    {
-        if (DB::connection()->getDriverName() !== 'mysql') {
-            return false;
-        }
-
-        $mysqldump = $this->findMysqldump();
-
-        if ($mysqldump === null) {
-            return false;
-        }
-
-        $config = DB::connection()->getConfig();
-        $outputFile = $directory . '/database/full.sql.gz';
-        File::ensureDirectoryExists(dirname($outputFile));
-
-        $tables = implode(' ', array_map(
-            escapeshellarg(...),
-            $this->tablesToBackup(),
-        ));
-
-        $command = sprintf(
-            '%s --single-transaction --quick --skip-lock-tables -h%s -P%s -u%s %s %s 2>&1 | gzip > %s',
-            escapeshellarg($mysqldump),
-            escapeshellarg((string) ($config['host'] ?? '127.0.0.1')),
-            escapeshellarg((string) ($config['port'] ?? '3306')),
-            escapeshellarg((string) ($config['username'] ?? 'root')),
-            ! empty($config['password'])
-                ? '-p' . escapeshellarg((string) $config['password'])
-                : '',
-            escapeshellarg((string) ($config['database'] ?? '')),
-            $tables,
-            escapeshellarg($outputFile),
-        );
-
-        exec($command, $output, $exitCode);
-
-        if ($exitCode !== 0 || ! File::exists($outputFile) || File::size($outputFile) === 0) {
-            if (File::exists($outputFile)) {
-                File::delete($outputFile);
-            }
-
-            $this->logger->warning('database', 'mysqldump export failed; falling back to chunked exporter.', [
-                'exit_code' => $exitCode,
-                'output' => implode("\n", $output),
-            ]);
-
-            return false;
-        }
-
-        return true;
     }
 
     protected function exportTable(string $table, string $gzipPath): void
@@ -188,26 +129,5 @@ class DatabaseBackupService
         }
 
         return DB::getPdo()->quote((string) $value);
-    }
-
-    protected function findMysqldump(): ?string
-    {
-        foreach (['mysqldump', 'C:\\laragon\\bin\\mysql\\mysql-8.4.3-winx64\\bin\\mysqldump.exe'] as $candidate) {
-            $command = stripos(PHP_OS_FAMILY, 'Windows') === 0
-                ? 'where ' . escapeshellarg($candidate) . ' 2>nul'
-                : 'command -v ' . escapeshellarg($candidate) . ' 2>/dev/null';
-
-            exec($command, $output, $exitCode);
-
-            if ($exitCode === 0 && isset($output[0]) && $output[0] !== '') {
-                return trim($output[0]);
-            }
-
-            if (is_file($candidate)) {
-                return $candidate;
-            }
-        }
-
-        return null;
     }
 }
