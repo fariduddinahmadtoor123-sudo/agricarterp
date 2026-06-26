@@ -623,3 +623,69 @@
         max-width: 100%;
     }
 }
+
+.agricart-pp-print-only {
+    display: none;
+}
+
+.agricart-pp-print-header {
+    margin-bottom: 1rem;
+}
+
+.agricart-pp-print-header h2 {
+    margin: 0 0 0.25rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+.agricart-pp-print-header p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #374151;
+}
+
+@media print {
+    .fi-sidebar,
+    .fi-topbar,
+    .agricart-module-nav,
+    .fi-header,
+    .fi-page-header-actions,
+    .fi-ta-header-toolbar,
+    .fi-ta-pagination {
+        display: none !important;
+    }
+
+    .fi-main {
+        background: #ffffff !important;
+    }
+
+    .agricart-pp-screen-only {
+        display: none !important;
+    }
+
+    .agricart-pp-print-only {
+        display: block !important;
+    }
+
+    .agricart-pp-worksheet__col-action,
+    .agricart-pp-worksheet__placeholder-row {
+        display: none !important;
+    }
+
+    .agricart-pp-worksheet__cell-input {
+        border: none;
+        background: transparent;
+        padding: 0;
+        box-shadow: none;
+    }
+
+    .agricart-pp-worksheet__grid {
+        min-width: 0;
+    }
+
+    @page {
+        margin: 12mm;
+        size: A4 portrait;
+    }
+}

@@ -2,29 +2,20 @@
 
 namespace App\Support\Settings;
 
-use App\Models\User;
-
 class PurchasePricingSettingAuthorization
 {
-    public static function user(): ?User
-    {
-        $user = auth()->user();
-
-        return $user instanceof User ? $user : null;
-    }
-
     public static function canView(): bool
     {
-        return static::user() !== null;
+        return SettingsAuthorization::canView();
     }
 
     public static function canCreate(): bool
     {
-        return static::canView();
+        return SettingsAuthorization::canCreate();
     }
 
     public static function canEdit(): bool
     {
-        return static::canView();
+        return SettingsAuthorization::canEdit();
     }
 }

@@ -24,4 +24,22 @@ class PermissionChecker
     {
         return static::user()?->isSuperAdmin() ?? false;
     }
+
+    public static function authorize(string $module, string $action): void
+    {
+        if (static::user() === null) {
+            return;
+        }
+
+        abort_unless(static::can($module, $action), 403);
+    }
+
+    public static function authorizeAbility(callable $allowed): void
+    {
+        if (static::user() === null) {
+            return;
+        }
+
+        abort_unless($allowed(), 403);
+    }
 }

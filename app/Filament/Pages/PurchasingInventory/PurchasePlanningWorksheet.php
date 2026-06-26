@@ -99,6 +99,9 @@ class PurchasePlanningWorksheet extends Page
                     'selectedCategoryLabel' => $this->selectedCategoryLabel,
                     'rows' => $this->rows,
                     'minVisualRows' => (int) config('purchasing-inventory.worksheet_min_visual_rows', 10),
+                    'sheetDate' => $this->sheetDate,
+                    'sheetTitle' => $this->sheetTitle,
+                    'notes' => $this->notes,
                 ]),
         ]);
     }

@@ -3,6 +3,7 @@
 namespace App\Services\PurchasingInventory;
 
 use App\Models\Product;
+use App\Models\PurchasingInventory\ProductStorePrice;
 use App\Services\ProductCatalog\ProductControlAssignmentService;
 use App\Services\ProductCatalog\ProductLabelQrGenerator;
 use Illuminate\Support\Str;
@@ -41,6 +42,10 @@ class PriceTagLineBuilder
             ?? $model?->baseUnit?->name_en
             ?? '';
 
+        $storedPrices = $model !== null
+            ? $this->storedPricesForProduct((int) $model->id)
+            : [];
+
         return $this->baseLine([
             'product_id' => (int) ($product['id'] ?? 0),
             'sku' => $sku,
@@ -52,12 +57,12 @@ class PriceTagLineBuilder
             'thumbnail_url' => $product['thumbnail_url'] ?? null,
             'purchase_qty' => '',
             'source_invoice' => '',
-            'sale_rate' => '',
-            'purchase_rate' => '',
-            'landing_cost' => '',
-            'wholesale_rate' => '',
-            'super_wholesale_rate' => '',
-            'distributor_rate' => '',
+            'sale_rate' => $storedPrices['sale_rate'] ?? '',
+            'purchase_rate' => $storedPrices['purchase_rate'] ?? '',
+            'landing_cost' => $storedPrices['landing_cost'] ?? '',
+            'wholesale_rate' => $storedPrices['wholesale_rate'] ?? '',
+            'super_wholesale_rate' => $storedPrices['super_wholesale_rate'] ?? '',
+            'distributor_rate' => $storedPrices['distributor_rate'] ?? '',
             'tier_codes' => $tierCodes,
             'purchase_code' => $purchaseCode !== '' ? $purchaseCode : $this->fallbackPurchaseCode($sku),
             'print_qty' => max(1, $printQty),
@@ -163,5 +168,40 @@ class PriceTagLineBuilder
         $digits = preg_replace('/\D/', '', $sku) ?: '0';
 
         return strtoupper(substr($digits, -3));
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function storedPricesForProduct(int $productId): array
+    {
+        $storeKey = (string) config('purchasing-inventory.demo_default_store', 'main');
+
+        $price = ProductStorePrice::query()
+            ->where('product_id', $productId)
+            ->where('store_key', $storeKey)
+            ->first();
+
+        if ($price === null) {
+            return [];
+        }
+
+        return [
+            'purchase_rate' => $this->formatStoredAmount($price->purchase_rate),
+            'landing_cost' => $this->formatStoredAmount($price->landing_cost),
+            'sale_rate' => $this->formatStoredAmount($price->sale_rate),
+            'wholesale_rate' => $this->formatStoredAmount($price->wholesale_rate),
+            'super_wholesale_rate' => $this->formatStoredAmount($price->super_wholesale_rate),
+            'distributor_rate' => $this->formatStoredAmount($price->distributor_rate),
+        ];
+    }
+
+    protected function formatStoredAmount(mixed $value): string
+    {
+        if ($value === null || $value === '') {
+            return '';
+        }
+
+        return PurchaseLineBuilder::formatAmount((float) $value);
     }
 }

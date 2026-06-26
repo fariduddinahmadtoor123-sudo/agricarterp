@@ -111,6 +111,8 @@ class PurchaseQuotationWorksheet extends Page
                     'storeKey' => $this->storeKey,
                     'storeName' => (string) ($this->sheet['store_name'] ?? ''),
                     'grandTotal' => PurchaseQuotationLineBuilder::grandTotal($this->rows),
+                    'sheetDate' => $this->sheetDate,
+                    'notes' => $this->notes,
                 ]),
         ]);
     }

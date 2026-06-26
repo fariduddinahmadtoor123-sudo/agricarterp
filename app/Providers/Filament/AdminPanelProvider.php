@@ -7,6 +7,7 @@ use App\Filament\Pages\Auth\EditProfile;
 use App\Filament\Pages\Settings\Overview as SettingsOverview;
 use App\Http\Controllers\BackupDownloadController;
 use App\Http\Controllers\Admin\QuickPurchaseController;
+use App\Http\Controllers\Admin\QuickSaleController;
 use App\Http\Controllers\ProductCatalog\BrandImageController;
 use App\Http\Controllers\ProductCatalog\CategoryImageController;
 use App\Http\Controllers\ProductCatalog\ProductImageController;
@@ -142,6 +143,9 @@ class AdminPanelProvider extends PanelProvider
 
                 Route::get('quick/purchase', QuickPurchaseController::class)
                     ->name('quick.purchase');
+
+                Route::get('quick/sale', QuickSaleController::class)
+                    ->name('quick.sale');
 
                 Route::get('backups/{backup}/download', BackupDownloadController::class)
                     ->name('backups.download');

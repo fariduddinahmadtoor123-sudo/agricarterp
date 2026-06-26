@@ -144,7 +144,9 @@ class CompanySettingForm
                     ->schema([
                         TextInput::make('website_url')
                             ->label('Website')
-                            ->url()
+                            ->prefix('https://')
+                            ->placeholder('toorstore.pk')
+                            ->helperText('Enter your site domain only. https:// is added automatically.')
                             ->maxLength(255)
                             ->columnSpanFull(),
                         TextInput::make('ntn')
@@ -230,7 +232,7 @@ class CompanySettingForm
             'phones' => static::repeaterFromPhoneEntries($setting->phones ?? []),
             'whatsapp_numbers' => static::repeaterFromWhatsAppEntries($setting->whatsapp_numbers ?? []),
             'emails' => static::repeaterFromList($setting->emails ?? [], 'email'),
-            'website_url' => $setting->website_url,
+            'website_url' => static::websiteForForm($setting->website_url),
             'ntn' => $setting->ntn,
             'strn' => $setting->strn,
             'currency' => $setting->currency,
@@ -326,5 +328,16 @@ class CompanySettingForm
             . '<img src="' . e($url) . '" alt="Company logo" loading="lazy">'
             . '</div>',
         );
+    }
+
+    public static function websiteForForm(?string $url): ?string
+    {
+        if (blank($url)) {
+            return null;
+        }
+
+        $value = trim((string) $url);
+
+        return preg_replace('#^https?://#i', '', $value) ?: null;
     }
 }

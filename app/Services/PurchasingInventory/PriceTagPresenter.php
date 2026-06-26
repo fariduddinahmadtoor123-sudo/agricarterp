@@ -3,12 +3,15 @@
 namespace App\Services\PurchasingInventory;
 
 use App\Services\Settings\PrintingSettingResolver;
+use App\Services\Settings\PurchasePricingSettingResolver;
 
 class PriceTagPresenter
 {
     public function __construct(
         protected PriceTagBarcodeGenerator $barcodeGenerator,
         protected PrintingSettingResolver $printingResolver,
+        protected PurchasePricingSettingResolver $pricingSettings,
+        protected PriceCodeWordingEncoder $priceCodeEncoder,
     ) {}
 
     /**
@@ -24,7 +27,7 @@ class PriceTagPresenter
         $barcodeValue = (string) ($line['barcode'] ?? $line['sku'] ?? '');
         $showBarcode = in_array($scanMode, ['barcode', 'both'], true) && $scanMode !== 'none';
 
-        $saleDigits = $this->saleDigits((string) ($line['sale_rate'] ?? ''));
+        $saleDigits = $this->encodedSalePrice((string) ($line['sale_rate'] ?? ''));
 
         $label = is_array($settings['label'] ?? null)
             ? $settings['label']
@@ -76,20 +79,11 @@ class PriceTagPresenter
         return trim(implode(' / ', array_filter($parts)));
     }
 
-    protected function saleDigits(string $saleRate): string
+    protected function encodedSalePrice(string $saleRate): string
     {
-        $value = str_replace(',', '', trim($saleRate));
-
-        if ($value === '' || ! is_numeric($value)) {
-            return '';
-        }
-
-        $number = (float) $value;
-
-        if ($number <= 0) {
-            return '';
-        }
-
-        return rtrim(rtrim(number_format($number, 2, '.', ''), '0'), '.');
+        return $this->priceCodeEncoder->encodeSalePrice(
+            $saleRate,
+            $this->pricingSettings->priceCodeWording(),
+        );
     }
 }

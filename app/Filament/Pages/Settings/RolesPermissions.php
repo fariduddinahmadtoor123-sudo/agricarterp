@@ -40,6 +40,11 @@ class RolesPermissions extends Page implements HasTable
         return 'roles-permissions';
     }
 
+    public static function canAccess(): bool
+    {
+        return RoleAuthorization::canView();
+    }
+
     public function content(Schema $schema): Schema
     {
         return $schema->components([

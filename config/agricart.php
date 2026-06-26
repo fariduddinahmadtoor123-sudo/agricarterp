@@ -222,25 +222,25 @@ return [
             'submenus' => [
                 'overview' => 'Overview',
                 'pos-sales' => 'POS Sales',
+                'held-sales' => 'Held Sales',
                 'online-orders' => 'Online Orders',
                 'sales-quotations' => 'Sales Quotations',
-                'sales-invoices' => 'Sales Invoices',
                 'sales-returns' => 'Sales Returns',
             ],
             'submenu_icons' => [
                 'overview' => \Filament\Support\Icons\Heroicon::OutlinedSquares2x2,
                 'pos-sales' => \Filament\Support\Icons\Heroicon::OutlinedComputerDesktop,
+                'held-sales' => \Filament\Support\Icons\Heroicon::OutlinedPauseCircle,
                 'online-orders' => \Filament\Support\Icons\Heroicon::OutlinedGlobeAlt,
                 'sales-quotations' => \Filament\Support\Icons\Heroicon::OutlinedDocumentText,
-                'sales-invoices' => \Filament\Support\Icons\Heroicon::OutlinedReceiptPercent,
                 'sales-returns' => \Filament\Support\Icons\Heroicon::OutlinedArrowUturnLeft,
             ],
             'pages' => [
                 'overview' => \App\Filament\Pages\SalesPos\Overview::class,
                 'pos-sales' => \App\Filament\Pages\SalesPos\PosSales::class,
+                'held-sales' => \App\Filament\Pages\SalesPos\HeldSales::class,
                 'online-orders' => \App\Filament\Pages\SalesPos\OnlineOrders::class,
                 'sales-quotations' => \App\Filament\Pages\SalesPos\SalesQuotations::class,
-                'sales-invoices' => \App\Filament\Pages\SalesPos\SalesInvoices::class,
                 'sales-returns' => \App\Filament\Pages\SalesPos\SalesReturns::class,
             ],
         ],
@@ -257,7 +257,7 @@ return [
                 'banner-manager' => 'Banner Manager',
                 'pages' => 'Pages',
                 'store-navigation' => 'Store Navigation',
-                'theme-settings' => 'Theme Settings',
+                'theme-settings' => 'Store Front',
             ],
             'submenu_icons' => [
                 'overview' => \Filament\Support\Icons\Heroicon::OutlinedSquares2x2,
@@ -451,6 +451,7 @@ return [
             'submenus' => [
                 'overview' => 'Overview',
                 'general-settings' => 'Store Setting',
+                'tax-system' => 'Tax System',
                 'purchase-pricing' => 'Purchase Pricing',
                 'ai-configuration' => 'AI Settings',
                 'ai-enrichment-logs' => 'AI Logs',
@@ -463,6 +464,7 @@ return [
             'submenu_icons' => [
                 'overview' => \Filament\Support\Icons\Heroicon::OutlinedSquares2x2,
                 'general-settings' => \Filament\Support\Icons\Heroicon::OutlinedCog6Tooth,
+                'tax-system' => \Filament\Support\Icons\Heroicon::OutlinedReceiptPercent,
                 'purchase-pricing' => \Filament\Support\Icons\Heroicon::OutlinedCurrencyDollar,
                 'ai-configuration' => \Filament\Support\Icons\Heroicon::OutlinedSparkles,
                 'ai-enrichment-logs' => \Filament\Support\Icons\Heroicon::OutlinedExclamationTriangle,
@@ -475,6 +477,7 @@ return [
             'pages' => [
                 'overview' => \App\Filament\Pages\Settings\Overview::class,
                 'general-settings' => \App\Filament\Pages\Settings\GeneralSettings::class,
+                'tax-system' => \App\Filament\Pages\Settings\TaxSystem::class,
                 'purchase-pricing' => \App\Filament\Pages\Settings\PurchasePricing::class,
                 'ai-configuration' => \App\Filament\Pages\Settings\AiConfiguration::class,
                 'ai-enrichment-logs' => \App\Filament\Pages\Settings\AiEnrichmentLogs::class,

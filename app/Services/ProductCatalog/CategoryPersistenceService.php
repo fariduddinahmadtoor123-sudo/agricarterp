@@ -3,6 +3,7 @@
 namespace App\Services\ProductCatalog;
 
 use App\Models\Category;
+use App\Support\Authorization\PermissionChecker;
 use App\Support\ProductCatalog\CategoryAuthorization;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -21,6 +22,8 @@ class CategoryPersistenceService
      */
     public function create(array $data): Category
     {
+        PermissionChecker::authorizeAbility(fn (): bool => CategoryAuthorization::canCreate());
+
         $data = $this->prepareData($data);
 
         $this->dataValidator->validate($data);
@@ -58,6 +61,8 @@ class CategoryPersistenceService
      */
     public function update(Category $category, array $data): Category
     {
+        PermissionChecker::authorizeAbility(fn (): bool => CategoryAuthorization::canEdit());
+
         if ($category->isArchived()) {
             abort(404);
         }

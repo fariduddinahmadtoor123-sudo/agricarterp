@@ -1,6 +1,6 @@
 <div class="agricart-pq-worksheet agricart-pp-worksheet">
     {{-- Quotation header --}}
-    <div class="agricart-pp-worksheet__header">
+    <div class="agricart-pp-worksheet__header agricart-pp-screen-only">
         <div class="agricart-pp-worksheet__header-left">
             <a href="{{ \App\Filament\Pages\PurchasingInventory\PurchaseQuotations::getUrl() }}" class="agricart-pp-worksheet__back">
                 {{ \Filament\Support\generate_icon_html(\Filament\Support\Icons\Heroicon::OutlinedArrowLeft, size: \Filament\Support\Enums\IconSize::Small) }}
@@ -42,6 +42,7 @@
             <span class="agricart-pp-worksheet__item-count">
                 {{ $itemCount }} {{ $itemCount === 1 ? 'Item' : 'Items' }}
             </span>
+            <button type="button" class="agricart-pp-worksheet__btn" onclick="window.print()">Print</button>
             <button
                 type="button"
                 class="agricart-pp-worksheet__btn agricart-pp-worksheet__btn--discard"
@@ -56,8 +57,20 @@
         </div>
     </div>
 
+    <div class="agricart-pp-print-header agricart-pp-print-only">
+        <h2>Purchase Quotation — {{ filled($quotationNumber) ? $quotationNumber : 'Draft' }}</h2>
+        <p>
+            {{ filled($sheet['supplier_name'] ?? null) ? $sheet['supplier_name'] : 'Supplier not set' }}
+            · {{ $storeName }}
+            · {{ $sheetDate }}
+        </p>
+        @if (filled($sheetTitle))
+            <p>{{ $sheetTitle }}</p>
+        @endif
+    </div>
+
     {{-- Supplier & store --}}
-    <div class="agricart-pq-worksheet__meta">
+    <div class="agricart-pq-worksheet__meta agricart-pp-screen-only">
         <label class="agricart-pq-worksheet__meta-field">
             <span class="agricart-pq-worksheet__meta-label">Supplier</span>
             <select class="agricart-pq-worksheet__meta-select" wire:model.live="supplierId">
@@ -83,7 +96,7 @@
     </div>
 
     {{-- Load toolbar --}}
-    <div class="agricart-pp-worksheet__toolbar">
+    <div class="agricart-pp-worksheet__toolbar agricart-pp-screen-only">
         <div class="agricart-pp-worksheet__toolbar-row agricart-pp-worksheet__toolbar-row--category">
             <span class="agricart-pp-worksheet__load-label">LOAD</span>
 
@@ -174,7 +187,7 @@
 
     {{-- Product grid --}}
     <div class="agricart-pp-worksheet__grid-wrap">
-        <div class="agricart-pp-worksheet__search-bar">
+        <div class="agricart-pp-worksheet__search-bar agricart-pp-screen-only">
             <span class="agricart-pp-worksheet__search-bar-plus">+</span>
             <div class="agricart-pp-inline-search agricart-pp-inline-search--product">
                 <input
@@ -306,7 +319,7 @@
     </div>
 
     {{-- Notes at bottom --}}
-    <div class="agricart-pq-worksheet__notes">
+    <div class="agricart-pq-worksheet__notes agricart-pp-screen-only">
         <label class="agricart-pq-worksheet__notes-label" for="pq-sheet-notes">Notes</label>
         <textarea
             id="pq-sheet-notes"

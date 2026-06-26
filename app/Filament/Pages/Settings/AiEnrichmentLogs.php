@@ -5,9 +5,11 @@ namespace App\Filament\Pages\Settings;
 use App\Filament\Pages\Concerns\InteractsWithModuleSubmenuPage;
 use App\Models\AiEnrichmentLog;
 use App\Support\Settings\AiSettingAuthorization;
+use Filament\Actions\Action;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\EmbeddedTable;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -73,11 +75,39 @@ class AiEnrichmentLogs extends Page implements HasTable
                 TextColumn::make('model')
                     ->label('Model')
                     ->toggleable(),
-                TextColumn::make('message')
-                    ->label('Message')
+                TextColumn::make('error_code')
+                    ->label('Code')
+                    ->formatStateUsing(fn (?int $state): string => filled($state) ? 'HTTP ' . $state : '—')
+                    ->toggleable(),
+                TextColumn::make('error_reason')
+                    ->label('Reason')
+                    ->placeholder(fn (AiEnrichmentLog $record): string => $record->status === AiEnrichmentLog::STATUS_SUCCESS
+                        ? ($record->message ?? 'Enrichment completed.')
+                        : ($record->message ?? '—'))
                     ->wrap()
                     ->searchable(),
+                TextColumn::make('suggested_action')
+                    ->label('Suggested Action')
+                    ->placeholder('—')
+                    ->wrap()
+                    ->toggleable(isToggledHiddenByDefault: false),
+            ])
+            ->recordActions([
+                $this->getViewLogAction(),
             ]);
+    }
+
+    protected function getViewLogAction(): Action
+    {
+        return Action::make('viewAiLog')
+            ->label('Details')
+            ->icon(Heroicon::OutlinedDocumentText)
+            ->modalHeading('AI Enrichment Log')
+            ->modalSubmitAction(false)
+            ->modalCancelActionLabel('Close')
+            ->modalContent(fn (AiEnrichmentLog $record): \Illuminate\Contracts\View\View => view('filament.settings.ai-enrichment-log-detail', [
+                'log' => $record,
+            ]));
     }
 
     public function getTitle(): string | \Illuminate\Contracts\Support\Htmlable

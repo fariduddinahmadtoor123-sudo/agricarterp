@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class PurchasePlanningSheetRepository
 {
+    use EnforcesPurchasingInventoryPermissions;
     use SyncsSheetLines;
 
     public function __construct(
@@ -62,6 +63,8 @@ class PurchasePlanningSheetRepository
      */
     public function create(array $attributes = []): array
     {
+        $this->authorizePurchasingCreate();
+
         $sheet = PurchasePlanningSheet::query()->create([
             'sheet_number' => $this->documentNumbers->next('purchase_planning'),
             'status' => 'draft',
@@ -80,6 +83,8 @@ class PurchasePlanningSheetRepository
      */
     public function update(array $sheet): void
     {
+        $this->authorizePurchasingEdit();
+
         DB::transaction(function () use ($sheet): void {
             $model = PurchasePlanningSheet::query()->with('lines')->find($sheet['id'] ?? null);
 
@@ -101,6 +106,8 @@ class PurchasePlanningSheetRepository
 
     public function delete(string $sheetId): void
     {
+        $this->authorizePurchasingDelete();
+
         PurchasePlanningSheet::query()->whereKey($sheetId)->delete();
     }
 

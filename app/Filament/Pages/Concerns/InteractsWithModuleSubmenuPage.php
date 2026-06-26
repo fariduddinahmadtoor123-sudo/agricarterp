@@ -2,6 +2,8 @@
 
 namespace App\Filament\Pages\Concerns;
 
+use App\Support\Authorization\PermissionChecker;
+use App\Support\Settings\SettingsAuthorization;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Text;
@@ -16,6 +18,22 @@ trait InteractsWithModuleSubmenuPage
     abstract public static function moduleKey(): string;
 
     abstract public static function submenuKey(): string;
+
+    public static function canAccess(): bool
+    {
+        $module = static::moduleKey();
+        $enforcedModules = config('users.permission_enforced_modules', []);
+
+        if (! in_array($module, $enforcedModules, true)) {
+            return true;
+        }
+
+        if ($module === 'settings') {
+            return SettingsAuthorization::canView();
+        }
+
+        return PermissionChecker::can($module, 'view');
+    }
 
     public function getTitle(): string | Htmlable
     {

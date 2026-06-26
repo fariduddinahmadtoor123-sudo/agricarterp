@@ -12,6 +12,7 @@ class OpenRouterClient
     public function __construct(
         protected AiSettingResolver $settings,
         protected OpenRouterModelCatalog $modelCatalog,
+        protected OpenRouterErrorInterpreter $errorInterpreter,
     ) {}
 
     /**
@@ -44,13 +45,15 @@ class OpenRouterClient
                     'response_format' => ['type' => 'json_object'],
                 ]);
         } catch (ConnectionException $exception) {
-            throw new AiEnrichmentException('Could not reach OpenRouter: ' . $exception->getMessage(), previous: $exception);
+            throw AiEnrichmentException::fromInterpreted(
+                $this->errorInterpreter->interpretException($exception),
+            );
         }
 
         if ($response->failed()) {
-            $message = $response->json('error.message') ?? $response->body();
-
-            throw new AiEnrichmentException('OpenRouter request failed: ' . $message);
+            throw AiEnrichmentException::fromInterpreted(
+                $this->errorInterpreter->interpretHttpResponse($response),
+            );
         }
 
         $content = $response->json('choices.0.message.content');

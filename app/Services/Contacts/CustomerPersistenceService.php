@@ -4,6 +4,7 @@ namespace App\Services\Contacts;
 
 use App\Models\ContactMobileNumber;
 use App\Models\Customer;
+use App\Support\Authorization\PermissionChecker;
 use App\Support\Contacts\CustomerAuthorization;
 use Illuminate\Support\Facades\DB;
 
@@ -21,6 +22,8 @@ class CustomerPersistenceService
      */
     public function create(array $data): Customer
     {
+        PermissionChecker::authorizeAbility(fn (): bool => CustomerAuthorization::canCreate());
+
         $data = $this->prepareData($data);
 
         $this->dataValidator->validate($data);
@@ -50,6 +53,8 @@ class CustomerPersistenceService
      */
     public function update(Customer $customer, array $data): Customer
     {
+        PermissionChecker::authorizeAbility(fn (): bool => CustomerAuthorization::canEdit());
+
         if ($customer->trashed()) {
             abort(404);
         }

@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 
 class PurchasePaymentSheetRepository
 {
+    use EnforcesPurchasingInventoryPermissions;
+
     public function __construct(
         protected DocumentNumberService $documentNumbers,
         protected PurchasePaymentSheetBuilder $builder,
@@ -62,6 +64,8 @@ class PurchasePaymentSheetRepository
      */
     public function create(array $attributes = []): array
     {
+        $this->authorizePurchasingCreate();
+
         $sheet = PurchasePaymentSheet::query()->create([
             'sheet_number' => $this->documentNumbers->next('purchase_payment'),
             'status' => 'draft',
@@ -84,6 +88,8 @@ class PurchasePaymentSheetRepository
      */
     public function update(array $sheet): void
     {
+        $this->authorizePurchasingEdit();
+
         DB::transaction(function () use ($sheet): void {
             $model = PurchasePaymentSheet::query()->with('vendorLines')->find($sheet['id'] ?? null);
 
@@ -107,6 +113,8 @@ class PurchasePaymentSheetRepository
 
     public function delete(string $sheetId): void
     {
+        $this->authorizePurchasingDelete();
+
         PurchasePaymentSheet::query()->whereKey($sheetId)->delete();
     }
 

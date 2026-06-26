@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class PurchaseQuotationSheetRepository
 {
+    use EnforcesPurchasingInventoryPermissions;
     use SyncsSheetLines;
 
     public function __construct(
@@ -62,6 +63,8 @@ class PurchaseQuotationSheetRepository
      */
     public function create(array $attributes = []): array
     {
+        $this->authorizePurchasingCreate();
+
         $defaultStoreKey = (string) config('purchasing-inventory.demo_default_store', 'main');
 
         $sheet = PurchaseQuotationSheet::query()->create([
@@ -86,6 +89,8 @@ class PurchaseQuotationSheetRepository
      */
     public function update(array $sheet): void
     {
+        $this->authorizePurchasingEdit();
+
         DB::transaction(function () use ($sheet): void {
             $model = PurchaseQuotationSheet::query()->with('lines')->find($sheet['id'] ?? null);
 
@@ -111,6 +116,8 @@ class PurchaseQuotationSheetRepository
 
     public function delete(string $sheetId): void
     {
+        $this->authorizePurchasingDelete();
+
         PurchaseQuotationSheet::query()->whereKey($sheetId)->delete();
     }
 

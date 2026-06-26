@@ -7,6 +7,7 @@ use App\Models\Supplier;
 use App\Models\SupplierBankAccount;
 use App\Models\SupplierContact;
 use App\Models\SupplierDocument;
+use App\Support\Authorization\PermissionChecker;
 use App\Support\Contacts\SupplierAuthorization;
 use Illuminate\Support\Facades\DB;
 
@@ -24,6 +25,8 @@ class SupplierPersistenceService
      */
     public function create(array $data): Supplier
     {
+        PermissionChecker::authorizeAbility(fn (): bool => SupplierAuthorization::canCreate());
+
         $data = $this->prepareData($data);
 
         $this->dataValidator->validate($data);
@@ -53,6 +56,8 @@ class SupplierPersistenceService
      */
     public function update(Supplier $supplier, array $data): Supplier
     {
+        PermissionChecker::authorizeAbility(fn (): bool => SupplierAuthorization::canEdit());
+
         if ($supplier->trashed()) {
             abort(404);
         }

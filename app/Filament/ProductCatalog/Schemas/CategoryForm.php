@@ -589,13 +589,6 @@ class CategoryForm
 
     protected static function lastAiErrorForCategory(Category $category): ?string
     {
-        $log = AiEnrichmentLog::query()
-            ->where('subject_type', Category::class)
-            ->where('subject_id', $category->id)
-            ->where('status', AiEnrichmentLog::STATUS_FAILED)
-            ->latest('id')
-            ->first();
-
-        return $log?->message;
+        return AiEnrichmentLog::latestFailureSummaryFor(Category::class, $category->id);
     }
 }

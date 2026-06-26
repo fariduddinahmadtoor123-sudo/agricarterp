@@ -27,8 +27,8 @@ class CategoryCatalogController extends Controller
             'categories' => $this->presenter->cards($categories),
             'products' => [],
             'breadcrumbs' => $this->presenter->breadcrumbs(),
-            'title' => 'Category Catalog',
-            'subtitle' => 'Browse product categories by hierarchy',
+            'title' => null,
+            'subtitle' => null,
             'parentCategory' => null,
         ]);
     }

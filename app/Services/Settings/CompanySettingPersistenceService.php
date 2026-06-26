@@ -4,6 +4,8 @@ namespace App\Services\Settings;
 
 use App\Models\CompanySetting;
 use App\Services\Contacts\MobileNumberNormalizer;
+use App\Support\Authorization\PermissionChecker;
+use App\Support\Settings\CompanySettingAuthorization;
 use Illuminate\Support\Facades\DB;
 
 class CompanySettingPersistenceService
@@ -19,6 +21,8 @@ class CompanySettingPersistenceService
      */
     public function create(array $data): CompanySetting
     {
+        PermissionChecker::authorizeAbility(fn (): bool => CompanySettingAuthorization::canCreate());
+
         $data = $this->prepareData($data);
 
         $this->dataValidator->validate($data);
@@ -33,6 +37,8 @@ class CompanySettingPersistenceService
      */
     public function update(CompanySetting $setting, array $data): CompanySetting
     {
+        PermissionChecker::authorizeAbility(fn (): bool => CompanySettingAuthorization::canEdit());
+
         $data = $this->prepareData($data, $setting);
 
         $this->dataValidator->validate($data, $setting);
@@ -61,6 +67,10 @@ class CompanySettingPersistenceService
         $data['phones'] = $this->normalizePhoneEntries($data['phones'] ?? []);
         $data['whatsapp_numbers'] = $this->normalizeWhatsAppEntries($data['whatsapp_numbers'] ?? []);
         $data['emails'] = $this->normalizeEmailList($data['emails'] ?? []);
+
+        if (array_key_exists('website_url', $data)) {
+            $data['website_url'] = $this->normalizeWebsiteUrl($data['website_url']);
+        }
 
         if (array_key_exists('logo', $data)) {
             $newPath = $this->logoStorage->extractPath($data['logo']);
@@ -214,5 +224,22 @@ class CompanySettingPersistenceService
         }
 
         return $attributes;
+    }
+
+    protected function normalizeWebsiteUrl(mixed $value): ?string
+    {
+        if (! filled($value)) {
+            return null;
+        }
+
+        $website = trim((string) $value);
+        $website = preg_replace('#^https?://#i', '', $website) ?? $website;
+        $website = trim($website, " \t\n\r\0\x0B/");
+
+        if ($website === '') {
+            return null;
+        }
+
+        return 'https://' . $website;
     }
 }

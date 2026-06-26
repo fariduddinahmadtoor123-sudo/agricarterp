@@ -104,6 +104,12 @@ class CatalogEnrichmentTest extends TestCase
         $job->handle(app(CatalogEnrichmentService::class));
 
         $this->assertSame(Category::AI_STATUS_FAILED, $category->fresh()->ai_status);
+
+        $log = \App\Models\AiEnrichmentLog::query()->first();
+        $this->assertNotNull($log);
+        $this->assertSame(429, $log->error_code);
+        $this->assertStringContainsString('Rate limit exceeded', (string) $log->error_reason);
+        $this->assertStringContainsString('Wait a few minutes', (string) $log->suggested_action);
     }
 
     public function test_dry_run_reports_pending_counts_without_queueing(): void

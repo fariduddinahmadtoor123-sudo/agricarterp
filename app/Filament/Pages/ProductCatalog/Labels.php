@@ -6,6 +6,7 @@ use App\Filament\Pages\Concerns\InteractsWithModuleSubmenuPage;
 use App\Filament\ProductCatalog\Support\LabelTableConfiguration;
 use App\Models\Product;
 use App\Support\ProductCatalog\ProductLabelPresenter;
+use Filament\Actions\Action;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\EmbeddedTable;
 use Filament\Schemas\Schema;
@@ -13,6 +14,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\HtmlString;
 
 class Labels extends Page implements HasTable
@@ -39,6 +41,19 @@ class Labels extends Page implements HasTable
         return $schema->components([
             EmbeddedTable::make(),
         ]);
+    }
+
+    /**
+     * @return array<Action>
+     */
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('printLabels')
+                ->label('Print')
+                ->icon(Heroicon::OutlinedPrinter)
+                ->action(fn () => $this->js('window.print()')),
+        ];
     }
 
     public function table(Table $table): Table

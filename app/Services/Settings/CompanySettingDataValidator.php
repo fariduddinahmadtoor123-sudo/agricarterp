@@ -29,7 +29,8 @@ class CompanySettingDataValidator
             'whatsapp_numbers.*.contact_person' => ['nullable', 'string', 'max:150'],
             'whatsapp_numbers.*.whatsapp_number' => ['nullable', 'string', 'max:30'],
             'emails' => ['nullable', 'array'],
-            'emails.*' => ['email', 'max:255'],
+            'emails.*' => ['nullable', 'email', 'max:255'],
+            'emails.*.email' => ['nullable', 'email', 'max:255'],
             'website_url' => ['nullable', 'string', 'max:255', 'url'],
             'ntn' => ['nullable', 'string', 'max:30'],
             'strn' => ['nullable', 'string', 'max:30'],
@@ -41,7 +42,7 @@ class CompanySettingDataValidator
             'currency.in' => 'Select a valid currency.',
             'timezone.in' => 'Select a valid timezone.',
             'emails.*.email' => 'Enter a valid email address.',
-            'website_url.url' => 'Enter a valid website URL.',
+            'website_url.url' => 'Enter a valid website address, e.g. toorstore.pk',
         ]);
 
         if ($validator->fails()) {

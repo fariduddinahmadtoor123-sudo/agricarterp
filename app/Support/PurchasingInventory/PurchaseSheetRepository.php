@@ -4,11 +4,13 @@ namespace App\Support\PurchasingInventory;
 
 use App\Models\PurchasingInventory\PurchaseSheet;
 use App\Services\PurchasingInventory\DocumentNumberService;
+use App\Services\PurchasingInventory\PurchaseProductPriceSyncService;
 use App\Services\Settings\PrintingSettingResolver;
 use Illuminate\Support\Facades\DB;
 
 class PurchaseSheetRepository
 {
+    use EnforcesPurchasingInventoryPermissions;
     use SyncsSheetLines;
 
     public function __construct(
@@ -63,6 +65,8 @@ class PurchaseSheetRepository
      */
     public function create(array $attributes = []): array
     {
+        $this->authorizePurchasingCreate();
+
         $defaultStoreKey = (string) config('purchasing-inventory.demo_default_store', 'main');
 
         $sheet = PurchaseSheet::query()->create([
@@ -100,6 +104,8 @@ class PurchaseSheetRepository
      */
     public function update(array $sheet): void
     {
+        $this->authorizePurchasingEdit();
+
         DB::transaction(function () use ($sheet): void {
             $model = PurchaseSheet::query()->with('lines')->find($sheet['id'] ?? null);
 
@@ -132,11 +138,18 @@ class PurchaseSheetRepository
             ]);
 
             $this->syncLineRows($model, $model->lines(), array_values($sheet['rows'] ?? []));
+
+            app(PurchaseProductPriceSyncService::class)->syncIfEnabled(
+                $this->toArray($model->fresh('lines')),
+                array_values($sheet['rows'] ?? []),
+            );
         });
     }
 
     public function delete(string $sheetId): void
     {
+        $this->authorizePurchasingDelete();
+
         PurchaseSheet::query()->whereKey($sheetId)->delete();
     }
 
