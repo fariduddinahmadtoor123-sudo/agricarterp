@@ -2,13 +2,14 @@
 
 namespace App\Services\OnlineStore;
 
-use Illuminate\Support\Arr;
+use App\Support\OnlineStore\ResolvesStorefrontRootUrl;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class StoreFooterLogoStorage
 {
+    use ResolvesStorefrontRootUrl;
     public function disk(): string
     {
         return (string) config('online-store.footer_logo_disk', 'local');
@@ -121,37 +122,6 @@ class StoreFooterLogoStorage
     public function servingUrl(string $path): string
     {
         return $this->rootedRoute('store.footer-logo', ['path' => $path]);
-    }
-
-    /**
-     * @param  array<string, mixed>  $parameters
-     */
-    protected function rootedRoute(string $name, array $parameters = []): string
-    {
-        $relative = route($name, $parameters, false);
-
-        if (app()->bound('request')) {
-            $request = request();
-            $baseUrl = $request->getBaseUrl();
-
-            if ($baseUrl !== '') {
-                return rtrim($request->getSchemeAndHttpHost() . $baseUrl, '/') . $relative;
-            }
-
-            $configuredUrl = rtrim((string) config('app.url'), '/');
-            $configuredHost = parse_url($configuredUrl, PHP_URL_HOST) ?: '';
-            $configuredPath = parse_url($configuredUrl, PHP_URL_PATH) ?: '';
-
-            if (
-                $configuredHost === $request->getHost()
-                && $configuredPath !== ''
-                && $configuredPath !== '/'
-            ) {
-                return $configuredUrl . $relative;
-            }
-        }
-
-        return route($name, $parameters);
     }
 
     public function cleanupIfReplaced(?string $oldPath, ?string $newPath): void

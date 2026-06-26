@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', config('agricart.brand.name', 'Agricart.pk'))</title>
-    <link rel="stylesheet" href="{{ asset('css/catalog.css') }}?v={{ @filemtime(public_path('css/catalog.css')) ?: 1 }}">
+    <link rel="stylesheet" href="{{ app(\App\Services\OnlineStore\StorefrontUrlBuilder::class)->catalogStylesheetUrl() }}">
     <style>
         :root {
             --store-category-columns: {{ (int) ($storefront['homepage_categories_per_row'] ?? 5) }};

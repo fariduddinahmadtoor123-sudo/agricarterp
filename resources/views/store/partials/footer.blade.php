@@ -1,6 +1,6 @@
 <footer class="store-footer">
     <div class="store-footer__inner">
-        <div class="store-footer__columns">
+        <div class="store-footer__columns {{ filled($storefront['map_embed_src'] ?? null) ? 'store-footer__columns--has-map' : 'store-footer__columns--no-map' }}">
             <div class="store-footer__column store-footer__column--brand">
                 <div class="store-footer__heading-offset" aria-hidden="true"></div>
                 <div class="store-footer__media store-footer__logo-box">

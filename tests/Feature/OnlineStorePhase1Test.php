@@ -213,6 +213,49 @@ class OnlineStorePhase1Test extends TestCase
         $this->get('/store/footer-logo?' . http_build_query(['path' => $path]))->assertOk();
     }
 
+    public function test_catalog_stylesheet_url_includes_app_subdirectory_when_configured(): void
+    {
+        config(['app.url' => 'http://localhost/agricarterp/public']);
+
+        $html = $this->withServerVariables(['HTTP_HOST' => 'localhost'])
+            ->get(route('catalog.index'))
+            ->assertOk()
+            ->getContent();
+
+        $this->assertMatchesRegularExpression(
+            '#href="http://localhost/agricarterp/public/css/catalog\.css\?v=[^"]+"#',
+            $html,
+        );
+    }
+
+    public function test_footer_uses_five_column_grid_when_map_is_absent(): void
+    {
+        app(StoreFrontSettingsPersistenceService::class)->save([
+            'top_bar_left' => 'L',
+            'top_bar_center' => 'C',
+            'top_bar_right' => 'R',
+            'ticker_en' => '',
+            'ticker_ur' => '',
+            'homepage_categories_per_row' => '5',
+            'social_links' => [],
+            'header_navigation' => [],
+            'footer_logo' => [],
+            'footer_logo_removed' => false,
+            'footer_about_en' => 'About',
+            'footer_about_ur' => '',
+            'footer_quick_links' => [],
+            'footer_legal_links' => [],
+            'contact_email' => 'shop@example.com',
+            'contact_phone' => null,
+            'map_embed_url' => null,
+            'copyright_line' => '© Test Store',
+        ]);
+
+        $this->get(route('catalog.index'))
+            ->assertOk()
+            ->assertSee('store-footer__columns--no-map', false);
+    }
+
     public function test_header_navigation_resolves_published_page(): void
     {
         $page = StorePage::query()->create([
