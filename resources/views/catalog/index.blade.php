@@ -1,27 +1,37 @@
-@extends('catalog.layout')
+@extends('store.layout')
 
-@section('title', $title)
+@section('title', $title ?? 'Catalog')
+
+@section('breadcrumbs')
+    @if (filled($title ?? null) || ($parentCategory ?? null) !== null)
+        @include('catalog.partials.breadcrumbs')
+    @endif
+@endsection
 
 @section('content')
-    <div class="catalog-page-heading">
-        <h1 class="catalog-page-heading__title">{{ $title }}</h1>
+    @if (filled($title ?? null))
+        <div class="catalog-page-heading">
+            <h1 class="catalog-page-heading__title">{{ $title }}</h1>
 
-        @if (filled($subtitle))
-            <p class="catalog-page-heading__subtitle">{{ $subtitle }}</p>
-        @endif
+            @if (filled($subtitle ?? null))
+                <p class="catalog-page-heading__subtitle">{{ $subtitle }}</p>
+            @endif
 
-        @if ($parentCategory !== null)
-            <div class="catalog-page-heading__meta">
-                <span class="catalog-meta-pill">{{ $parentCategory->category_number }}</span>
-                <span class="catalog-meta-pill">{{ $parentCategory->visual_mapping_code }}</span>
-            </div>
-        @endif
-    </div>
+            @if (($parentCategory ?? null) !== null)
+                <div class="catalog-page-heading__meta">
+                    <span class="catalog-meta-pill">{{ $parentCategory->category_number }}</span>
+                    <span class="catalog-meta-pill">{{ $parentCategory->visual_mapping_code }}</span>
+                </div>
+            @endif
+        </div>
+    @endif
 
     @if (count($categories) > 0)
         <div class="catalog-section">
-            <h2 class="catalog-section__title">Categories</h2>
-            <div class="catalog-grid">
+            @if (filled($title ?? null))
+                <h2 class="catalog-section__title">Categories</h2>
+            @endif
+            <div class="catalog-grid store-category-grid">
                 @foreach ($categories as $category)
                     @include('catalog.partials.category-card', ['category' => $category])
                 @endforeach

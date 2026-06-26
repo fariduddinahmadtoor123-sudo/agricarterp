@@ -1,7 +1,3 @@
-@php
-    use App\Filament\Pages\SalesPos\PosSales;
-@endphp
-
 <div class="agricart-topbar-quick-actions" role="group" aria-label="Quick actions">
     <a
         href="{{ route('filament.admin.quick.purchase') }}"
@@ -13,7 +9,7 @@
     </a>
 
     <a
-        href="{{ PosSales::getUrl() }}"
+        href="{{ route('filament.admin.quick.sale') }}"
         class="agricart-topbar-quick-actions__btn"
         title="New sale (POS)"
     >

@@ -16,6 +16,9 @@ class DocumentNumberService
         'reorder' => 'RO',
         'stock_adjustment' => 'SA',
         'opening_stock' => 'OS',
+        'pos_sale' => 'PS',
+        'sales_quotation' => 'SQ',
+        'sales_return' => 'SR',
     ];
 
     public function next(string $documentType, ?\DateTimeInterface $date = null): string

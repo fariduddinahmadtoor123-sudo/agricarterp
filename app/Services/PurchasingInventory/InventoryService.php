@@ -259,6 +259,58 @@ class InventoryService
         });
     }
 
+    /**
+     * @param  list<array<string, mixed>>  $rows
+     */
+    public function issuePosSale(string $saleId, string $storeKey, array $rows): void
+    {
+        DB::transaction(function () use ($saleId, $storeKey, $rows): void {
+            foreach ($rows as $row) {
+                $productId = (int) ($row['product_id'] ?? 0);
+                $qty = \App\Services\SalesPos\PosSaleLineBuilder::numeric($row['qty'] ?? '');
+
+                if ($productId <= 0 || $qty <= 0) {
+                    continue;
+                }
+
+                $this->decreaseStock(
+                    productId: $productId,
+                    storeKey: $storeKey,
+                    quantity: $qty,
+                    movementType: 'pos_sale',
+                    referenceType: 'pos_sale',
+                    referenceId: $saleId,
+                );
+            }
+        });
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $rows
+     */
+    public function receivePosSaleReturn(string $returnId, string $storeKey, array $rows): void
+    {
+        DB::transaction(function () use ($returnId, $storeKey, $rows): void {
+            foreach ($rows as $row) {
+                $productId = (int) ($row['product_id'] ?? 0);
+                $qty = \App\Services\SalesPos\PosSaleLineBuilder::numeric($row['return_qty'] ?? $row['qty'] ?? '');
+
+                if ($productId <= 0 || $qty <= 0) {
+                    continue;
+                }
+
+                $this->increaseStock(
+                    productId: $productId,
+                    storeKey: $storeKey,
+                    quantity: $qty,
+                    movementType: 'pos_sale_return',
+                    referenceType: 'sales_return',
+                    referenceId: $returnId,
+                );
+            }
+        });
+    }
+
     protected function increaseStock(
         int $productId,
         string $storeKey,
